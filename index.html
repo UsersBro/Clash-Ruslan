@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Clash Ruslan</title>
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #2c3e50; color: white; display: flex; flex-direction: column; height: 100vh; overflow: hidden; touch-action: manipulation; user-select: none; }
+        .screen { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: flex-start; width: 100%; padding: 15px; box-sizing: border-box; text-align: center; overflow-y: auto; }
+        .active { display: flex; }
+        h1 { color: #f1c40f; text-shadow: 2px 2px #d35400; font-size: clamp(2rem, 5vw, 2.5rem); margin-bottom: 10px;}
+        
+        .auth-form { background: #34495e; padding: 25px; border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.4); width: 100%; max-width: 320px; margin: auto; display: flex; flex-direction: column; gap: 15px;}
+        .auth-form input { padding: 12px; border-radius: 8px; border: 2px solid #bdc3c7; font-size: 1rem; background: #ecf0f1; outline: none; }
+        button { background: linear-gradient(to bottom, #3498db, #2980b9); color: white; border: 2px solid #1abc9c; padding: 12px 25px; font-size: 1.1rem; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.2s;}
+        button:active { transform: translateY(2px); }
+        .btn-battle { background: linear-gradient(to bottom, #e74c3c, #c0392b); border-color: #f1c40f; font-size: 1.5rem; padding: 20px 50px; border-radius: 20px; animation: pulse 1.5s infinite; margin: 30px 0; width: 100%; max-width: 300px; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        .nav-bar { display: flex; width: 100%; max-width: 400px; gap: 10px; margin-bottom: 15px; margin-top: 60px; }
+        .nav-btn { flex: 1; padding: 12px; border-radius: 10px; background: #7f8c8d; border: none; font-size: 1.1rem; }
+        .nav-btn.active-tab { background: #f1c40f; color: #2c3e50; border: 2px solid #d35400; }
+
+        .deck-container { display: flex; gap: 10px; justify-content: center; background: #1abc9c; padding: 10px; border-radius: 10px; border: 2px solid #16a085; margin-bottom: 20px; }
+        .deck-slot { width: 60px; height: 80px; background: #2c3e50; border: 2px dashed #bdc3c7; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer;}
+        .deck-slot.selected { border: 3px solid #f1c40f; box-shadow: 0 0 10px #f1c40f; }
+        
+        .cards-container { display: flex; gap: 10px; padding: 10px; width: 100%; max-width: 800px; justify-content: center; flex-wrap: wrap; }
+        .card { background: #34495e; border: 3px solid; border-radius: 10px; padding: 10px; width: 75px; display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative;}
+        
+        .rarity-common { border-color: #bdc3c7; }
+        .rarity-epic { border-color: #9b59b6; box-shadow: 0 0 10px rgba(155, 89, 182, 0.5); }
+        .rarity-mythic { border-color: #e74c3c; box-shadow: 0 0 10px rgba(231, 76, 60, 0.5); }
+        .rarity-legendary { border-color: #f1c40f; box-shadow: 0 0 15px rgba(241, 196, 15, 0.8); background: linear-gradient(135deg, #34495e, #8e44ad); }
+
+        .card h3 { margin: 5px 0; font-size: 0.8rem; color: #ecf0f1; }
+        .card .stats { color: #f1c40f; font-weight: bold; font-size: 0.7rem; text-align: center; }
+        .locked-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-weight: bold; z-index: 5;}
+
+        /* АРЕНА (Новый дизайн с рекой) */
+        #arena-container { width: 100%; max-width: 400px; height: 65vh; background: #27ae60; border: 4px solid #fff; border-radius: 10px; position: relative; overflow: hidden; margin-top: 10px; cursor: crosshair; }
+        .river { position: absolute; top: 45%; left: 0; width: 100%; height: 10%; background: #3498db; z-index: 1; border-top: 2px solid #2980b9; border-bottom: 2px solid #2980b9;}
+        .bridge { position: absolute; top: 45%; width: 20%; height: 10%; background: #c0392b; z-index: 2; border-left: 3px solid #8e44ad; border-right: 3px solid #8e44ad; box-sizing: border-box;}
+        .bridge-left { left: 15%; }
+        .bridge-right { right: 15%; }
+        
+        .base { position: absolute; width: 90px; height: 50px; background: #2c3e50; border: 3px solid; border-radius: 10px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; flex-direction: column; z-index: 10;}
+        .base-enemy { top: 10px; border-color: #e74c3c; }
+        .base-mine { bottom: 10px; border-color: #3498db; }
+        .base-hp { font-weight: bold; font-size: 1.1rem; }
+
+        /* Бойцы на арене */
+        .troop { position: absolute; font-size: 2rem; transform: translate(-50%, -50%); z-index: 5; transition: transform 0.1s; pointer-events: none;}
+        .hp-bar-bg { width: 30px; height: 5px; background: red; position: absolute; top: -5px; left: 50%; transform: translateX(-50%); border-radius: 3px; border: 1px solid black;}
+        .hp-bar { height: 100%; background: #2ecc71; border-radius: 2px; width: 100%; }
+
+        /* Колода в бою */
+        .battle-deck { display: flex; gap: 10px; justify-content: center; margin-top: 10px; width: 100%; max-width: 400px; }
+        .battle-card { flex: 1; height: 80px; background: #34495e; border: 3px solid #f1c40f; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden;}
+        .battle-card.selected-in-battle { border-color: #2ecc71; box-shadow: 0 0 15px #2ecc71; transform: translateY(-5px);}
+        .cooldown-overlay { position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; background: rgba(0,0,0,0.7); z-index: 2; transition: height linear; }
+
+        #user-info { position: absolute; top: 10px; left: 10px; display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.8); padding: 5px 15px; border-radius: 20px; border: 1px solid #f1c40f; z-index: 100; }
+        .logout-btn { background: #c0392b; border: none; padding: 5px 10px; font-size: 0.8rem; border-radius: 5px; margin-left: 10px; }
+
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(5px);}
+        .overlay.active { display: flex; }
+        .modal-box { background: #2c3e50; border: 3px solid #f1c40f; border-radius: 15px; padding: 25px; max-width: 350px; width: 90%; text-align: center; }
+        .modal-title { color: #f1c40f; margin-top: 0; border-bottom: 2px solid #34495e; padding-bottom: 10px;}
+        #search-timer { font-size: 3rem; color: #1abc9c; font-weight: bold; margin: 15px 0; }
+        #found-timer { font-size: 4rem; color: #e74c3c; font-weight: bold; margin: 10px 0; animation: pulse 1s infinite; }
+        .big-nickname { font-size: 1.5rem; color: #f1c40f; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 10px;}
+    </style>
+</head>
+<body>
+
+    <div id="msg-overlay" class="overlay">
+        <div class="modal-box">
+            <h2 class="modal-title" id="msg-title">Внимание</h2>
+            <p id="msg-text">Текст</p>
+            <button onclick="document.getElementById('msg-overlay').classList.remove('active')" style="width: 100%;">Ок</button>
+        </div>
+    </div>
+
+    <div id="search-overlay" class="overlay">
+        <div class="modal-box">
+            <h2 class="modal-title">Поиск Бродяги...</h2>
+            <div id="search-timer">0</div>
+            <button onclick="cancelSearch()" style="background: #e74c3c; width: 100%;">Отмена</button>
+        </div>
+    </div>
+
+    <div id="found-overlay" class="overlay">
+        <div class="modal-box">
+            <h2 class="modal-title" style="color: #2ecc71;">ПРОТИВНИК НАЙДЕН!</h2>
+            <div class="big-nickname" id="found-enemy-name">...</div>
+            <div id="found-timer">5</div>
+        </div>
+    </div>
+
+    <!-- Вход -->
+    <div id="login-screen" class="screen active" style="justify-content: center;">
+        <h1>👑 CLASH RUSLAN 👑</h1>
+        <div class="auth-form">
+            <input type="text" id="auth-username" placeholder="Придумай логин" required>
+            <input type="password" id="auth-password" placeholder="Введи пароль" required>
+            <button id="btn-auth">Играть!</button>
+        </div>
+    </div>
+
+    <!-- Меню -->
+    <div id="menu-screen" class="screen">
+        <div id="user-info">
+            <span>🏆 <span id="user-cups">0</span></span>
+            <span style="color: #f1c40f;">|</span>
+            <span id="user-name">Игрок</span>
+            <button class="logout-btn" id="btn-logout">Выйти</button>
+        </div>
+
+        <div class="nav-bar">
+            <button class="nav-btn active-tab" id="tab-battle">Арена</button>
+            <button class="nav-btn" id="tab-fighters">Бойцы</button>
+        </div>
+
+        <div id="section-battle" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+            <h2 style="color: #bdc3c7;">Докажи, кто тут главный</h2>
+            <button id="btn-search-match" class="btn-battle">В БОЙ!</button>
+        </div>
+
+        <div id="section-fighters" style="display: none; flex-direction: column; align-items: center; width: 100%;">
+            <h3 style="margin: 0 0 5px 0;">Выбрана в бой (Нажми на слот)</h3>
+            <div class="deck-container" id="active-deck">
+                <div class="deck-slot selected" onclick="selectSlot(0)" id="slot-0"></div>
+                <div class="deck-slot" onclick="selectSlot(1)" id="slot-1"></div>
+                <div class="deck-slot" onclick="selectSlot(2)" id="slot-2"></div>
+                <div class="deck-slot" onclick="selectSlot(3)" id="slot-3"></div>
+            </div>
+            <div class="cards-container" id="cards-list"></div>
+        </div>
+    </div>
+
+    <!-- Бой -->
+    <div id="battle-screen" class="screen">
+        <h4 style="margin: 0; color: #e74c3c;">Враг: <span id="opponent-name">...</span></h4>
+        
+        <div id="arena-container">
+            <!-- Река и мосты -->
+            <div class="river"></div>
+            <div class="bridge bridge-left"></div>
+            <div class="bridge bridge-right"></div>
+
+            <div class="base base-enemy">
+                <span style="font-size: 0.6rem; color:#bdc3c7;">База врага</span>
+                <span class="base-hp" style="color:#e74c3c;" id="enemy-hp">1000</span>
+            </div>
+            
+            <div class="base base-mine">
+                <span style="font-size: 0.6rem; color:#bdc3c7;">Твоя база</span>
+                <span class="base-hp" style="color:#2ecc71;" id="my-hp">1000</span>
+            </div>
+        </div>
+
+        <p style="margin: 5px 0; font-size: 0.8rem; color:#f1c40f;">Выбери карту и нажми на СВОЮ половину арены</p>
+        <div class="battle-deck" id="battle-deck"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs, onSnapshot, updateDoc, deleteDoc, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCpdhqORFRvpgNHrrseljKgkafLCMXX2J0",
+            authDomain: "clash-ruslan.firebaseapp.com",
+            projectId: "clash-ruslan",
+            storageBucket: "clash-ruslan.firebasestorage.app",
+            messagingSenderId: "214925554865",
+            appId: "1:214925554865:web:3bb6c1815604beeec6de90"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // --- НОВЫЕ СТАТЫ БОЙЦОВ ---
+        const ALL_FIGHTERS = {
+            maks: { id: 'maks', name: "Макс", rarity: "common", hp: 150, dmg: 20, speed: 0.6, cd: 3000, atkSpeed: 800, icon: "🛹", reqCups: 0 },
+            dimon: { id: 'dimon', name: "Димон", rarity: "common", hp: 180, dmg: 25, speed: 0.5, cd: 4000, atkSpeed: 1000, icon: "🧢", reqCups: 0 },
+            zheka: { id: 'zheka', name: "Жека", rarity: "common", hp: 200, dmg: 30, speed: 0.4, cd: 5000, atkSpeed: 1200, icon: "🚬", reqCups: 0 },
+            oleg: { id: 'oleg', name: "Олег", rarity: "common", hp: 300, dmg: 40, speed: 0.3, cd: 6000, atkSpeed: 1500, icon: "💪", reqCups: 0 },
+            sanya: { id: 'sanya', name: "Саня", rarity: "epic", hp: 350, dmg: 50, speed: 0.5, cd: 7000, atkSpeed: 1000, icon: "🎸", reqCups: 100 },
+            serega: { id: 'serega', name: "Серега", rarity: "epic", hp: 450, dmg: 60, speed: 0.5, cd: 8000, atkSpeed: 1200, icon: "🥊", reqCups: 250 },
+            mikha: { id: 'mikha', name: "Миха", rarity: "mythic", hp: 500, dmg: 80, speed: 0.8, cd: 10000, atkSpeed: 900, icon: "🏍️", reqCups: 500 },
+            vovan: { id: 'vovan', name: "Вован", rarity: "mythic", hp: 700, dmg: 100, speed: 0.4, cd: 12000, atkSpeed: 1500, icon: "🕴️", reqCups: 800 },
+            batya: { id: 'batya', name: "Батя", rarity: "legendary", hp: 1500, dmg: 150, speed: 0.2, cd: 15000, atkSpeed: 2000, icon: "👑", reqCups: 1500 },
+            ruslan: { id: 'ruslan', name: "Руслан", rarity: "legendary", hp: 2000, dmg: 200, speed: 0.3, cd: 20000, atkSpeed: 1800, icon: "😎", reqCups: 2000 }
+        };
+
+        let currentUsername = null, userData = null;
+        let currentBattleId = null, isPlayer1 = false, battleP1 = null;
+        
+        let searchInt = null, queueUnsub = null, battleUnsub = null, spawnsUnsub = null;
+        
+        let selectedDeckSlot = 0;
+        let cardCooldowns = {}; 
+        let selectedCardInBattle = null;
+
+        // Движок игры
+        let troops = [];
+        let gameLoop = null;
+
+        window.showMsg = (title, text) => {
+            document.getElementById('msg-title').innerText = title;
+            document.getElementById('msg-text').innerText = text;
+            document.getElementById('msg-overlay').classList.add('active');
+        };
+
+        function showScreen(name) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(name).classList.add('active');
+        }
+
+        // --- ВКЛАДКИ ---
+        document.getElementById('tab-battle').onclick = () => {
+            document.getElementById('tab-battle').classList.add('active-tab');
+            document.getElementById('tab-fighters').classList.remove('active-tab');
+            document.getElementById('section-battle').style.display = 'flex';
+            document.getElementById('section-fighters').style.display = 'none';
+        };
+        document.getElementById('tab-fighters').onclick = () => {
+            document.getElementById('tab-fighters').classList.add('active-tab');
+            document.getElementById('tab-battle').classList.remove('active-tab');
+            document.getElementById('section-battle').style.display = 'none';
+            document.getElementById('section-fighters').style.display = 'flex';
+            renderDeck();
+        };
+
+        // --- АВТОРИЗАЦИЯ ---
+        document.getElementById('btn-auth').onclick = async () => {
+            const userInp = document.getElementById('auth-username').value.trim().toLowerCase();
+            const passInp = document.getElementById('auth-password').value;
+            if(!userInp || !passInp) return showMsg("Ошибка", "Заполни поля!");
+
+            const userSnap = await getDoc(doc(db, "users", userInp));
+            if (userSnap.exists()) {
+                if (userSnap.data().password === passInp) loginSuccess(userInp, userSnap.data());
+                else showMsg("Ошибка", "Неверный пароль!");
+            } else {
+                const newData = { password: passInp, cups: 0, deck: ['maks', 'dimon', 'zheka', 'oleg'] };
+                await setDoc(doc(db, "users", userInp), newData);
+                loginSuccess(userInp, newData);
+            }
+        };
+
+        function loginSuccess(username, data) {
+            currentUsername = username;
+            userData = data;
+            if(userData.cups === undefined) userData.cups = 0;
+            if(!userData.deck) userData.deck = ['maks', 'dimon', 'zheka', 'oleg'];
+            localStorage.setItem('clash_ruslan_user', currentUsername);
+            document.getElementById('user-name').innerText = currentUsername;
+            document.getElementById('user-cups').innerText = userData.cups;
+            showScreen('menu-screen');
+        }
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            const saved = localStorage.getItem('clash_ruslan_user');
+            if (saved) {
+                const snap = await getDoc(doc(db, "users", saved));
+                if(snap.exists()) loginSuccess(saved, snap.data());
+            }
+        });
+
+        document.getElementById('btn-logout').onclick = () => {
+            localStorage.removeItem('clash_ruslan_user');
+            location.reload();
+        };
+
+        // --- РЕДАКТОР КОЛОДЫ ---
+        window.selectSlot = (index) => {
+            selectedDeckSlot = index;
+            for(let i=0; i<4; i++) document.getElementById('slot-'+i).classList.remove('selected');
+            document.getElementById('slot-'+index).classList.add('selected');
+        };
+
+        window.equipCard = async (fighterId) => {
+            if(userData.deck.includes(fighterId)) return showMsg("Внимание", "Уже в колоде!");
+            userData.deck[selectedDeckSlot] = fighterId;
+            renderDeck();
+            await setDoc(doc(db, "users", currentUsername), { deck: userData.deck }, { merge: true });
+        };
+
+        function renderDeck() {
+            for(let i=0; i<4; i++) document.getElementById('slot-'+i).innerText = ALL_FIGHTERS[userData.deck[i]].icon;
+            
+            const container = document.getElementById('cards-list');
+            container.innerHTML = '';
+            for (const [key, bData] of Object.entries(ALL_FIGHTERS)) {
+                const isUnl = userData.cups >= bData.reqCups;
+                const cardDiv = document.createElement('div');
+                cardDiv.className = `card rarity-${bData.rarity}`;
+                
+                if(!isUnl) {
+                    cardDiv.innerHTML = `<div class="locked-overlay">🔒<br>🏆 ${bData.reqCups}</div><div style="font-size: 1.5rem; opacity:0.5;">${bData.icon}</div><h3>${bData.name}</h3>`;
+                } else {
+                    cardDiv.onclick = () => equipCard(key);
+                    cardDiv.innerHTML = `<div style="font-size: 1.8rem;">${bData.icon}</div><h3>${bData.name}</h3>
+                        <div class="stats">ХП: ${bData.hp}<br>Урон: ${bData.dmg}</div>`;
+                }
+                container.appendChild(cardDiv);
+            }
+        }
+
+        // --- МАТЧМЕЙКИНГ ---
+        document.getElementById('btn-search-match').onclick = async () => {
+            document.getElementById('search-overlay').classList.add('active');
+            let secs = 0; document.getElementById('search-timer').innerText = secs;
+            
+            searchInt = setInterval(() => {
+                secs++; document.getElementById('search-timer').innerText = secs;
+                if(secs >= 60) { cancelSearch(); showMsg("Время вышло", "Нет противников."); }
+            }, 1000);
+
+            const q = query(collection(db, "matchmaking"), where("status", "==", "waiting"));
+            const qSnap = await getDocs(q);
+            let found = null;
+            qSnap.forEach((d) => { if (d.id !== currentUsername && !found) found = d.id; });
+
+            if (found) {
+                const bId = found + "_vs_" + currentUsername;
+                await updateDoc(doc(db, "matchmaking", found), { status: "matched", battleId: bId });
+                await setDoc(doc(db, "battles", bId), { p1: found, p2: currentUsername, hp1: 2000, hp2: 2000, active: true });
+                matchFoundSequence(bId, found, false, found);
+            } else {
+                await setDoc(doc(db, "matchmaking", currentUsername), { status: "waiting", timestamp: Date.now() });
+                queueUnsub = onSnapshot(doc(db, "matchmaking", currentUsername), (dSnap) => {
+                    if (dSnap.exists() && dSnap.data().status === "matched") {
+                        matchFoundSequence(dSnap.data().battleId, dSnap.data().battleId.split("_vs_")[1], true, currentUsername);
+                    }
+                });
+            }
+        };
+
+        window.cancelSearch = async () => {
+            clearInterval(searchInt); if(queueUnsub) queueUnsub();
+            document.getElementById('search-overlay').classList.remove('active');
+            await deleteDoc(doc(db, "matchmaking", currentUsername));
+        };
+
+        function matchFoundSequence(bId, opponent, isP1, p1Name) {
+            clearInterval(searchInt); if(queueUnsub) queueUnsub();
+            document.getElementById('search-overlay').classList.remove('active');
+            
+            document.getElementById('found-overlay').classList.add('active');
+            document.getElementById('found-enemy-name').innerText = opponent;
+            
+            let st = 5; document.getElementById('found-timer').innerText = st;
+            const sInt = setInterval(() => {
+                st--; document.getElementById('found-timer').innerText = st;
+                if(st <= 0) {
+                    clearInterval(sInt);
+                    document.getElementById('found-overlay').classList.remove('active');
+                    startBattle(bId, opponent, isP1, p1Name);
+                }
+            }, 1000);
+        }
+
+        // --- ЛОГИКА БОЯ ---
+        function startBattle(bId, opponent, isP1, p1Name) {
+            currentBattleId = bId;
+            isPlayer1 = isP1;
+            battleP1 = p1Name;
+            document.getElementById('opponent-name').innerText = opponent;
+            cardCooldowns = {}; troops = []; selectedCardInBattle = null;
+            
+            document.querySelectorAll('.troop').forEach(t => t.remove());
+            showScreen('battle-screen');
+            setupBattleDeck();
+
+            battleUnsub = onSnapshot(doc(db, "battles", currentBattleId), (docSnap) => {
+                if(!docSnap.exists() || !docSnap.data().active) return;
+                const d = docSnap.data();
+                const myHp = isPlayer1 ? d.hp1 : d.hp2;
+                const enHp = isPlayer1 ? d.hp2 : d.hp1;
+                document.getElementById('my-hp').innerText = myHp;
+                document.getElementById('enemy-hp').innerText = enHp;
+                if (myHp <= 0 || enHp <= 0) endBattle(myHp > 0);
+            });
+
+            // Слушаем спавны от обоих игроков
+            spawnsUnsub = onSnapshot(collection(db, "battles", currentBattleId, "spawns"), (snap) => {
+                snap.docChanges().forEach(change => {
+                    if(change.type === "added") {
+                        const d = change.doc.data();
+                        const f = ALL_FIGHTERS[d.type];
+                        troops.push({
+                            id: change.doc.id, owner: d.owner, lane: d.lane, y: d.y,
+                            dir: d.owner === battleP1 ? 1 : -1, // P1 всегда идет снизу вверх (0 -> 100)
+                            hp: f.hp, maxHp: f.hp, dmg: f.dmg, speed: f.speed, atkSpeed: f.atkSpeed,
+                            lastAttack: 0, icon: f.icon
+                        });
+                    }
+                });
+            });
+
+            // Запуск локального движка (30 FPS)
+            if(gameLoop) clearInterval(gameLoop);
+            gameLoop = setInterval(runGameEngine, 33);
+        }
+
+        function setupBattleDeck() {
+            const deck = document.getElementById('battle-deck');
+            deck.innerHTML = '';
+            userData.deck.forEach((k, index) => {
+                const f = ALL_FIGHTERS[k];
+                const btn = document.createElement('div');
+                btn.className = 'battle-card rarity-' + f.rarity;
+                btn.id = 'battle-card-' + index;
+                btn.innerHTML = `<div class="cooldown-overlay" id="cd-${index}"></div>
+                    <span style="font-size: 2rem; z-index:3; pointer-events:none;">${f.icon}</span>`;
+                
+                btn.onclick = () => selectCardInBattle(index);
+                deck.appendChild(btn);
+            });
+        }
+
+        window.selectCardInBattle = (index) => {
+            if(cardCooldowns[index]) return;
+            document.querySelectorAll('.battle-card').forEach(c => c.classList.remove('selected-in-battle'));
+            selectedCardInBattle = index;
+            document.getElementById('battle-card-'+index).classList.add('selected-in-battle');
+        };
+
+        // Клик по арене (Высадка)
+        document.getElementById('arena-container').onclick = async (e) => {
+            if(selectedCardInBattle === null) return;
+            
+            const rect = document.getElementById('arena-container').getBoundingClientRect();
+            const clickY = e.clientY - rect.top;
+            const clickX = e.clientX - rect.left;
+            
+            if(clickY < rect.height / 2) {
+                showMsg("Эй!", "Можно высаживать братву только на своей половине!");
+                return;
+            }
+
+            const lane = (clickX < rect.width / 2) ? 1 : 2;
+            const index = selectedCardInBattle;
+            const fId = userData.deck[index];
+            const f = ALL_FIGHTERS[fId];
+            
+            // Запуск кулдауна
+            cardCooldowns[index] = true;
+            selectedCardInBattle = null;
+            document.querySelectorAll('.battle-card').forEach(c => c.classList.remove('selected-in-battle'));
+            
+            const cdEl = document.getElementById(`cd-${index}`);
+            cdEl.style.transition = 'none'; cdEl.style.height = '100%';
+            setTimeout(() => { cdEl.style.transition = `height ${f.cd}ms linear`; cdEl.style.height = '0%'; }, 50);
+            setTimeout(() => { cardCooldowns[index] = false; }, f.cd);
+
+            // Отправка в БД
+            const startY = isPlayer1 ? 5 : 95; // P1 стартует около 0, P2 около 100
+            await addDoc(collection(db, "battles", currentBattleId, "spawns"), {
+                owner: currentUsername, type: fId, lane: lane, y: startY, time: Date.now()
+            });
+        };
+
+        // --- ИГРОВОЙ ДВИЖОК ---
+        function runGameEngine() {
+            if(!currentBattleId) return;
+
+            troops.forEach(t => {
+                if(t.hp <= 0) return;
+                
+                // Поиск врага
+                let enemies = troops.filter(e => e.owner !== t.owner && e.lane === t.lane && e.hp > 0);
+                let closest = null; let minDist = 100;
+                
+                enemies.forEach(e => {
+                    if(t.dir === 1 && e.y < t.y) return; // Враг должен быть впереди
+                    if(t.dir === -1 && e.y > t.y) return;
+                    let d = Math.abs(t.y - e.y);
+                    if(d < minDist) { minDist = d; closest = e; }
+                });
+
+                if(closest && minDist <= 5) { // Бой
+                    if(Date.now() - t.lastAttack >= t.atkSpeed) {
+                        closest.hp -= t.dmg;
+                        t.lastAttack = Date.now();
+                        let el = document.getElementById('troop-'+t.id);
+                        if(el) { el.style.transform = 'translate(-50%, -50%) scale(1.3)'; setTimeout(()=>el.style.transform='translate(-50%, -50%) scale(1)', 100); }
+                    }
+                } else { // Идет вперед
+                    t.y += t.dir * t.speed;
+                    
+                    // Дошел до базы
+                    if(t.dir === 1 && t.y >= 100) {
+                        t.hp = 0; if(t.owner === currentUsername) damageBase(t.dmg);
+                    } else if(t.dir === -1 && t.y <= 0) {
+                        t.hp = 0; if(t.owner === currentUsername) damageBase(t.dmg);
+                    }
+                }
+            });
+
+            // Очистка мертвых
+            troops = troops.filter(t => {
+                if(t.hp <= 0) { let el = document.getElementById('troop-'+t.id); if(el) el.remove(); return false; }
+                return true;
+            });
+
+            renderTroops();
+        }
+
+        async function damageBase(dmg) {
+            const bRef = doc(db, "battles", currentBattleId);
+            const snap = await getDoc(bRef);
+            if(snap.exists() && snap.data().active) {
+                if(isPlayer1) updateDoc(bRef, { hp2: snap.data().hp2 - dmg });
+                else updateDoc(bRef, { hp1: snap.data().hp1 - dmg });
+            }
+        }
+
+        function renderTroops() {
+            troops.forEach(t => {
+                let el = document.getElementById('troop-' + t.id);
+                if(!el) {
+                    el = document.createElement('div'); el.id = 'troop-' + t.id; el.className = 'troop';
+                    el.innerHTML = `<div class="hp-bar-bg"><div class="hp-bar" id="hp-${t.id}"></div></div>${t.icon}`;
+                    document.getElementById('arena-container').appendChild(el);
+                }
+                
+                document.getElementById('hp-'+t.id).style.width = Math.max(0, (t.hp / t.maxHp) * 100) + '%';
+                el.style.left = t.lane === 1 ? '25%' : '75%';
+                el.style.top = (isPlayer1 ? 100 - t.y : t.y) + '%'; // Всегда видим свою базу внизу
+            });
+        }
+
+        async function endBattle(isWin) {
+            clearInterval(gameLoop);
+            if(battleUnsub) battleUnsub();
+            if(spawnsUnsub) spawnsUnsub();
+            
+            // Если мы хост (Игрок 1), мы закрываем комнату чтобы избежать дублей
+            if(isPlayer1) await updateDoc(doc(db, "battles", currentBattleId), { active: false });
+            currentBattleId = null;
+            
+            await deleteDoc(doc(db, "matchmaking", currentUsername));
+            
+            if(isWin) userData.cups += 30;
+            else { userData.cups -= 20; if(userData.cups < 0) userData.cups = 0; }
+
+            await setDoc(doc(db, "users", currentUsername), { cups: userData.cups }, { merge: true });
+            document.getElementById('user-cups').innerText = userData.cups;
+            
+            showScreen('menu-screen');
+            showMsg(isWin ? "🏆 ПОБЕДА!" : "💀 ПОРАЖЕНИЕ", isWin ? "Ты разнес базу! +30 🏆" : "Твою базу стерли... -20 🏆");
+        }
+    </script>
+</body>
+</html>
