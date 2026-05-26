@@ -8,72 +8,97 @@
         body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #2c3e50; color: white; display: flex; flex-direction: column; height: 100vh; overflow: hidden; touch-action: manipulation; user-select: none; }
         .screen { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: flex-start; width: 100%; padding: 15px; box-sizing: border-box; text-align: center; overflow-y: auto; }
         .active { display: flex; }
-        h1 { color: #f1c40f; text-shadow: 2px 2px #d35400; font-size: clamp(2rem, 5vw, 2.5rem); margin-bottom: 10px;}
+        h1 { color: #f1c40f; text-shadow: 2px 2px #d35400; font-size: clamp(1.8rem, 5vw, 2.5rem); margin-bottom: 10px;}
         
-        .auth-form { background: #34495e; padding: 25px; border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.4); width: 100%; max-width: 320px; margin: auto; display: flex; flex-direction: column; gap: 15px;}
-        .auth-form input { padding: 12px; border-radius: 8px; border: 2px solid #bdc3c7; font-size: 1rem; background: #ecf0f1; outline: none; }
+        .auth-form { background: #34495e; padding: 25px; border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.4); width: 100%; max-width: 320px; margin: auto; display: flex; flex-direction: column; gap: 12px;}
+        .auth-form input { padding: 12px; border-radius: 8px; border: 2px solid #bdc3c7; font-size: 1rem; background: #ecf0f1; outline: none; color: #2c3e50; }
+        .auth-buttons { display: flex; gap: 10px; }
+        .auth-buttons button { flex: 1; font-size: 0.95rem; padding: 10px; }
+        
         button { background: linear-gradient(to bottom, #3498db, #2980b9); color: white; border: 2px solid #1abc9c; padding: 12px 25px; font-size: 1.1rem; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.2s;}
         button:active { transform: translateY(2px); }
-        .btn-battle { background: linear-gradient(to bottom, #e74c3c, #c0392b); border-color: #f1c40f; font-size: 1.5rem; padding: 20px 50px; border-radius: 20px; animation: pulse 1.5s infinite; margin: 30px 0; width: 100%; max-width: 300px; }
+        .btn-battle { background: linear-gradient(to bottom, #e74c3c, #c0392b); border-color: #f1c40f; font-size: 1.5rem; padding: 20px 50px; border-radius: 20px; animation: pulse 1.5s infinite; margin: 20px 0; width: 100%; max-width: 300px; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
-        .nav-bar { display: flex; width: 100%; max-width: 400px; gap: 10px; margin-bottom: 15px; margin-top: 60px; }
-        .nav-btn { flex: 1; padding: 12px; border-radius: 10px; background: #7f8c8d; border: none; font-size: 1.1rem; }
+        .nav-bar { display: flex; width: 100%; max-width: 550px; gap: 4px; margin-bottom: 15px; margin-top: 60px; }
+        .nav-btn { flex: 1; padding: 8px 4px; border-radius: 8px; background: #7f8c8d; border: none; font-size: 0.85rem; color: white; font-weight: bold;}
         .nav-btn.active-tab { background: #f1c40f; color: #2c3e50; border: 2px solid #d35400; }
 
-        .deck-container { display: flex; gap: 10px; justify-content: center; background: #1abc9c; padding: 10px; border-radius: 10px; border: 2px solid #16a085; margin-bottom: 20px; }
-        .deck-slot { width: 60px; height: 80px; background: #2c3e50; border: 2px dashed #bdc3c7; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer;}
+        .deck-container { display: flex; gap: 10px; justify-content: center; background: #1abc9c; padding: 10px; border-radius: 10px; border: 2px solid #16a085; margin-bottom: 15px; width: 100%; max-width: 320px;}
+        .deck-slot { width: 55px; height: 75px; background: #2c3e50; border: 2px dashed #bdc3c7; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer;}
         .deck-slot.selected { border: 3px solid #f1c40f; box-shadow: 0 0 10px #f1c40f; }
         
         .cards-container { display: flex; gap: 10px; padding: 10px; width: 100%; max-width: 800px; justify-content: center; flex-wrap: wrap; }
-        .card { background: #34495e; border: 3px solid; border-radius: 10px; padding: 10px; width: 75px; display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative;}
+        .card { background: #34495e; border: 3px solid; border-radius: 10px; padding: 8px; width: 85px; display: flex; flex-direction: column; align-items: center; position: relative;}
         
         .rarity-common { border-color: #bdc3c7; }
         .rarity-epic { border-color: #9b59b6; box-shadow: 0 0 10px rgba(155, 89, 182, 0.5); }
         .rarity-mythic { border-color: #e74c3c; box-shadow: 0 0 10px rgba(231, 76, 60, 0.5); }
         .rarity-legendary { border-color: #f1c40f; box-shadow: 0 0 15px rgba(241, 196, 15, 0.8); background: linear-gradient(135deg, #34495e, #8e44ad); }
 
-        .card h3 { margin: 5px 0; font-size: 0.8rem; color: #ecf0f1; }
-        .card .stats { color: #f1c40f; font-weight: bold; font-size: 0.7rem; text-align: center; }
+        .card h3 { margin: 3px 0; font-size: 0.8rem; color: #ecf0f1; }
+        .card .stats { color: #f1c40f; font-weight: bold; font-size: 0.65rem; text-align: center; margin-bottom: 5px;}
         .locked-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-weight: bold; z-index: 5;}
 
-        /* АРЕНА (Новый дизайн с рекой) */
-        #arena-container { width: 100%; max-width: 400px; height: 65vh; background: #27ae60; border: 4px solid #fff; border-radius: 10px; position: relative; overflow: hidden; margin-top: 10px; cursor: crosshair; }
-        .river { position: absolute; top: 45%; left: 0; width: 100%; height: 10%; background: #3498db; z-index: 1; border-top: 2px solid #2980b9; border-bottom: 2px solid #2980b9;}
-        .bridge { position: absolute; top: 45%; width: 20%; height: 10%; background: #c0392b; z-index: 2; border-left: 3px solid #8e44ad; border-right: 3px solid #8e44ad; box-sizing: border-box;}
-        .bridge-left { left: 15%; }
-        .bridge-right { right: 15%; }
+        /* АРЕНА */
+        #arena-container { width: 100%; max-width: 400px; height: 50vh; background: #27ae60; border: 4px solid #fff; border-radius: 10px; position: relative; overflow: hidden; margin-top: 5px; }
+        .river { position: absolute; top: 48%; left: 0; width: 100%; height: 4%; background: #3498db; z-index: 1; border-top: 2px solid #2980b9; border-bottom: 2px solid #2980b9;}
+        .bridge { position: absolute; top: 46%; width: 16%; height: 8%; background: #d35400; z-index: 2; border: 2px solid #ba4a00; border-radius: 4px;}
+        .bridge-left { left: 20%; }
+        .bridge-right { right: 20%; }
         
-        .base { position: absolute; width: 90px; height: 50px; background: #2c3e50; border: 3px solid; border-radius: 10px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; flex-direction: column; z-index: 10;}
+        .base { position: absolute; width: 80px; height: 40px; background: #2c3e50; border: 3px solid; border-radius: 10px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; flex-direction: column; z-index: 10;}
         .base-enemy { top: 10px; border-color: #e74c3c; }
         .base-mine { bottom: 10px; border-color: #3498db; }
         .base-hp { font-weight: bold; font-size: 1.1rem; }
 
-        /* Бойцы на арене */
-        .troop { position: absolute; font-size: 2rem; transform: translate(-50%, -50%); z-index: 5; transition: transform 0.1s; pointer-events: none;}
-        .hp-bar-bg { width: 30px; height: 5px; background: red; position: absolute; top: -5px; left: 50%; transform: translateX(-50%); border-radius: 3px; border: 1px solid black;}
-        .hp-bar { height: 100%; background: #2ecc71; border-radius: 2px; width: 100%; }
+        .chat-bubble { position: absolute; background: white; color: black; padding: 4px 10px; border-radius: 10px; font-weight: bold; font-size: 0.8rem; z-index: 100; border: 2px solid #34495e; display: none; transform: translateX(-50%); left: 50%;}
+        #enemy-chat { top: 55px; }
+        #my-chat { bottom: 55px; }
 
-        /* Колода в бою */
-        .battle-deck { display: flex; gap: 10px; justify-content: center; margin-top: 10px; width: 100%; max-width: 400px; }
-        .battle-card { flex: 1; height: 80px; background: #34495e; border: 3px solid #f1c40f; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden;}
-        .battle-card.selected-in-battle { border-color: #2ecc71; box-shadow: 0 0 15px #2ecc71; transform: translateY(-5px);}
+        .troop { position: absolute; font-size: 1.8rem; transform: translate(-50%, -50%); z-index: 5; pointer-events: none; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;}
+        .hp-bar-bg { width: 28px; height: 4px; background: red; position: absolute; top: -6px; left: 50%; transform: translateX(-50%); border-radius: 2px; border: 1px solid black;}
+        .hp-bar { height: 100%; background: #2ecc71; width: 100%; }
+
+        .battle-deck { display: flex; gap: 8px; justify-content: center; margin-top: 5px; width: 100%; max-width: 400px; }
+        .battle-card { flex: 1; height: 70px; background: #34495e; border: 3px solid #f1c40f; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden;}
+        .battle-card.selected-in-battle { border-color: #2ecc71; box-shadow: 0 0 15px #2ecc71; transform: translateY(-3px);}
         .cooldown-overlay { position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; background: rgba(0,0,0,0.7); z-index: 2; transition: height linear; }
 
-        #user-info { position: absolute; top: 10px; left: 10px; display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.8); padding: 5px 15px; border-radius: 20px; border: 1px solid #f1c40f; z-index: 100; }
-        .logout-btn { background: #c0392b; border: none; padding: 5px 10px; font-size: 0.8rem; border-radius: 5px; margin-left: 10px; }
+        .chat-panel { display: flex; gap: 5px; margin-top: 5px; width: 100%; max-width: 400px; }
+        .chat-btn { flex: 1; padding: 5px; font-size: 0.8rem; background: #34495e; border: 1px solid #bdc3c7; border-radius: 5px; color: white; font-weight: bold; }
+
+        #user-info { position: absolute; top: 10px; left: 10px; display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.8); padding: 5px 12px; border-radius: 20px; border: 1px solid #f1c40f; z-index: 100; font-size: 0.85rem;}
+        .settings-btn { background: #8e44ad; border: 1px solid #9b59b6; padding: 3px 8px; font-size: 0.8rem; border-radius: 5px; margin-left: 3px; cursor: pointer; color: white; font-weight: bold;}
 
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(5px);}
         .overlay.active { display: flex; }
         .modal-box { background: #2c3e50; border: 3px solid #f1c40f; border-radius: 15px; padding: 25px; max-width: 350px; width: 90%; text-align: center; }
         .modal-title { color: #f1c40f; margin-top: 0; border-bottom: 2px solid #34495e; padding-bottom: 10px;}
-        #search-timer { font-size: 3rem; color: #1abc9c; font-weight: bold; margin: 15px 0; }
-        #found-timer { font-size: 4rem; color: #e74c3c; font-weight: bold; margin: 10px 0; animation: pulse 1s infinite; }
-        .big-nickname { font-size: 1.5rem; color: #f1c40f; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 10px;}
+        
+        #search-timer { font-size: 3rem; color: #1abc9c; font-weight: bold; margin: 10px 0; }
+        #found-timer { font-size: 3.5rem; color: #e74c3c; font-weight: bold; margin: 5px 0; }
+        .big-nickname { font-size: 1.4rem; color: #f1c40f; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 10px; margin-bottom: 5px;}
+
+        .road-container, .friends-container, .requests-container { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 400px; padding: 10px; box-sizing: border-box; }
+        .road-item, .friend-item { background: #34495e; border: 2px solid #bdc3c7; border-radius: 12px; padding: 12px; display: flex; align-items: center; justify-content: space-between; text-align: left;}
+        .road-item.unlocked { border-color: #f1c40f; background: #2c3e50; }
+        .road-cup-badge { background: #e67e22; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;}
+        
+        .friend-input-box { display: flex; gap: 10px; width: 100%; max-width: 400px; margin-bottom: 15px;}
+        .friend-input-box input { flex: 1; padding: 10px; border-radius: 8px; border: none; }
+        
+        .request-btns button { padding: 5px 10px; font-size: 0.9rem; margin-left: 5px; border-radius: 5px; border: none; font-weight: bold;}
+        .btn-accept { background: #2ecc71; color: white; }
+        .btn-decline { background: #e74c3c; color: white; }
+        
+        .settings-buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+        .settings-buttons button { width: 100%; padding: 12px; font-size: 1rem; }
     </style>
 </head>
 <body>
 
+    <!-- Модалка уведомлений -->
     <div id="msg-overlay" class="overlay">
         <div class="modal-box">
             <h2 class="modal-title" id="msg-title">Внимание</h2>
@@ -82,29 +107,48 @@
         </div>
     </div>
 
+    <!-- Модалка Настроек -->
+    <div id="settings-overlay" class="overlay">
+        <div class="modal-box">
+            <h2 class="modal-title">Настройки ⚙️</h2>
+            <div class="settings-buttons">
+                <button id="btn-toggle-sound" style="background: #3498db; border-color: #2980b9;">Выключить звук 🔇</button>
+                <button id="btn-settings-logout" style="background: #e67e22; border-color: #d35400;">Выйти из аккаунта 🚪</button>
+                <button id="btn-settings-delete" style="background: #c0392b; border-color: #a93226;">Удалить аккаунт 🗑️</button>
+            </div>
+            <button onclick="document.getElementById('settings-overlay').classList.remove('active')" style="margin-top: 20px; background: #7f8c8d; border-color: #95a5a6; width: 100%;">Закрыть</button>
+        </div>
+    </div>
+
+    <!-- Поиск матча -->
     <div id="search-overlay" class="overlay">
         <div class="modal-box">
             <h2 class="modal-title">Поиск Бродяги...</h2>
-            <div id="search-timer">0</div>
+            <div id="search-timer">0:00</div>
             <button onclick="cancelSearch()" style="background: #e74c3c; width: 100%;">Отмена</button>
         </div>
     </div>
 
+    <!-- Противник найден -->
     <div id="found-overlay" class="overlay">
         <div class="modal-box">
             <h2 class="modal-title" style="color: #2ecc71;">ПРОТИВНИК НАЙДЕН!</h2>
             <div class="big-nickname" id="found-enemy-name">...</div>
+            <p style="margin:5px 0;">Устройство: <span id="found-enemy-device" style="font-weight:bold; color:#3498db;">?</span></p>
             <div id="found-timer">5</div>
         </div>
     </div>
 
-    <!-- Вход -->
+    <!-- Вход / Старая Регистрация -->
     <div id="login-screen" class="screen active" style="justify-content: center;">
         <h1>👑 CLASH RUSLAN 👑</h1>
         <div class="auth-form">
-            <input type="text" id="auth-username" placeholder="Придумай логин" required>
+            <input type="text" id="auth-username" placeholder="Введи логин" required>
             <input type="password" id="auth-password" placeholder="Введи пароль" required>
-            <button id="btn-auth">Играть!</button>
+            <div class="auth-buttons">
+                <button id="btn-login" style="background: linear-gradient(to bottom, #2ecc71, #27ae60); border-color:#2ecc71;">Войти</button>
+                <button id="btn-register" style="background: linear-gradient(to bottom, #9b59b6, #8e44ad); border-color:#9b59b6;">Рега</button>
+            </div>
         </div>
     </div>
 
@@ -113,22 +157,36 @@
         <div id="user-info">
             <span>🏆 <span id="user-cups">0</span></span>
             <span style="color: #f1c40f;">|</span>
+            <span>💎 <span id="user-tokens">0</span></span>
+            <span style="color: #f1c40f;">|</span>
             <span id="user-name">Игрок</span>
-            <button class="logout-btn" id="btn-logout">Выйти</button>
+            <button class="settings-btn" onclick="document.getElementById('settings-overlay').classList.add('active')">⚙️ Опции</button>
         </div>
 
         <div class="nav-bar">
             <button class="nav-btn active-tab" id="tab-battle">Арена</button>
             <button class="nav-btn" id="tab-fighters">Бойцы</button>
+            <button class="nav-btn" id="tab-road">Путь славы</button>
+            <button class="nav-btn" id="tab-friends">Друзья</button>
         </div>
 
+        <!-- Раздел АРЕНА (Главная) -->
         <div id="section-battle" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
-            <h2 style="color: #bdc3c7;">Докажи, кто тут главный</h2>
+            <h3 style="color: #bdc3c7; margin-top:10px; margin-bottom: 5px;">Твоя боевая колода:</h3>
+            <div class="deck-container" id="main-menu-deck" style="margin-bottom: 25px;">
+                <div class="deck-slot" id="main-slot-0"></div>
+                <div class="deck-slot" id="main-slot-1"></div>
+                <div class="deck-slot" id="main-slot-2"></div>
+                <div class="deck-slot" id="main-slot-3"></div>
+            </div>
+            
+            <h2 style="color: #bdc3c7; margin:0;">Готов ворваться в топ?</h2>
             <button id="btn-search-match" class="btn-battle">В БОЙ!</button>
         </div>
 
+        <!-- Раздел БОЙЦЫ -->
         <div id="section-fighters" style="display: none; flex-direction: column; align-items: center; width: 100%;">
-            <h3 style="margin: 0 0 5px 0;">Выбрана в бой (Нажми на слот)</h3>
+            <h3 style="margin: 0 0 5px 0;">Настройка колоды (Нажми слот)</h3>
             <div class="deck-container" id="active-deck">
                 <div class="deck-slot selected" onclick="selectSlot(0)" id="slot-0"></div>
                 <div class="deck-slot" onclick="selectSlot(1)" id="slot-1"></div>
@@ -137,31 +195,58 @@
             </div>
             <div class="cards-container" id="cards-list"></div>
         </div>
+
+        <!-- Раздел ПУТЬ СЛАВЫ -->
+        <div id="section-road" style="display: none; flex-direction: column; align-items: center; width: 100%;">
+            <h2>🏆 Путь к Славе 🏆</h2>
+            <div class="road-container" id="road-list"></div>
+        </div>
+
+        <!-- Раздел ДРУЗЬЯ И ЗАПРОСЫ -->
+        <div id="section-friends" style="display: none; flex-direction: column; align-items: center; width: 100%;">
+            <h2>👥 Друзья и Запросы 👥</h2>
+            <div class="friend-input-box">
+                <input type="text" id="friend-username" placeholder="Логин друга">
+                <button id="btn-add-friend" style="padding:10px 15px;">Отправить запрос</button>
+            </div>
+            
+            <h3 style="color: #f1c40f; margin-bottom: 5px;">Входящие заявки:</h3>
+            <div class="requests-container" id="requests-list"></div>
+            
+            <h3 style="color: #2ecc71; margin-bottom: 5px; margin-top: 15px;">Твои бро:</h3>
+            <div class="friends-container" id="friends-list"></div>
+        </div>
     </div>
 
-    <!-- Бой -->
+    <!-- Экран Боя -->
     <div id="battle-screen" class="screen">
         <h4 style="margin: 0; color: #e74c3c;">Враг: <span id="opponent-name">...</span></h4>
         
         <div id="arena-container">
-            <!-- Река и мосты -->
             <div class="river"></div>
             <div class="bridge bridge-left"></div>
             <div class="bridge bridge-right"></div>
 
+            <div class="chat-bubble" id="enemy-chat">Привет 👋</div>
+            <div class="chat-bubble" id="my-chat">Хорош 🔥</div>
+
             <div class="base base-enemy">
-                <span style="font-size: 0.6rem; color:#bdc3c7;">База врага</span>
-                <span class="base-hp" style="color:#e74c3c;" id="enemy-hp">1000</span>
+                <span class="base-hp" style="color:#e74c3c;" id="enemy-hp">1250</span>
             </div>
             
             <div class="base base-mine">
-                <span style="font-size: 0.6rem; color:#bdc3c7;">Твоя база</span>
-                <span class="base-hp" style="color:#2ecc71;" id="my-hp">1000</span>
+                <span class="base-hp" style="color:#2ecc71;" id="my-hp">1250</span>
             </div>
         </div>
 
-        <p style="margin: 5px 0; font-size: 0.8rem; color:#f1c40f;">Выбери карту и нажми на СВОЮ половину арены</p>
         <div class="battle-deck" id="battle-deck"></div>
+
+        <div class="chat-panel">
+            <button class="chat-btn" onclick="sendChat('Привет 👋')">Привет 👋</button>
+            <button class="chat-btn" onclick="sendChat('Хорош 🔥')">Хорош 🔥</button>
+            <button class="chat-btn" onclick="sendChat('Пока 🚪')">Пока 🚪</button>
+            <button class="chat-btn" onclick="sendChat('Упс... 😢')">Упс... 😢</button>
+        </div>
     </div>
 
     <script type="module">
@@ -180,32 +265,46 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // --- НОВЫЕ СТАТЫ БОЙЦОВ ---
+        const myDevice = /Mobi|Android|iPhone/i.test(navigator.userAgent) ? "Мобилка 📱" : "ПК 💻";
+
         const ALL_FIGHTERS = {
-            maks: { id: 'maks', name: "Макс", rarity: "common", hp: 150, dmg: 20, speed: 0.6, cd: 3000, atkSpeed: 800, icon: "🛹", reqCups: 0 },
-            dimon: { id: 'dimon', name: "Димон", rarity: "common", hp: 180, dmg: 25, speed: 0.5, cd: 4000, atkSpeed: 1000, icon: "🧢", reqCups: 0 },
-            zheka: { id: 'zheka', name: "Жека", rarity: "common", hp: 200, dmg: 30, speed: 0.4, cd: 5000, atkSpeed: 1200, icon: "🚬", reqCups: 0 },
-            oleg: { id: 'oleg', name: "Олег", rarity: "common", hp: 300, dmg: 40, speed: 0.3, cd: 6000, atkSpeed: 1500, icon: "💪", reqCups: 0 },
-            sanya: { id: 'sanya', name: "Саня", rarity: "epic", hp: 350, dmg: 50, speed: 0.5, cd: 7000, atkSpeed: 1000, icon: "🎸", reqCups: 100 },
-            serega: { id: 'serega', name: "Серега", rarity: "epic", hp: 450, dmg: 60, speed: 0.5, cd: 8000, atkSpeed: 1200, icon: "🥊", reqCups: 250 },
-            mikha: { id: 'mikha', name: "Миха", rarity: "mythic", hp: 500, dmg: 80, speed: 0.8, cd: 10000, atkSpeed: 900, icon: "🏍️", reqCups: 500 },
-            vovan: { id: 'vovan', name: "Вован", rarity: "mythic", hp: 700, dmg: 100, speed: 0.4, cd: 12000, atkSpeed: 1500, icon: "🕴️", reqCups: 800 },
-            batya: { id: 'batya', name: "Батя", rarity: "legendary", hp: 1500, dmg: 150, speed: 0.2, cd: 15000, atkSpeed: 2000, icon: "👑", reqCups: 1500 },
-            ruslan: { id: 'ruslan', name: "Руслан", rarity: "legendary", hp: 2000, dmg: 200, speed: 0.3, cd: 20000, atkSpeed: 1800, icon: "😎", reqCups: 2000 }
+            maks: { id: 'maks', name: "Макс", rarity: "common", hp: 160, dmg: 22, speed: 0.8, cd: 3000, atkSpeed: 800, icon: "🛹", reqCups: 0 },
+            dimon: { id: 'dimon', name: "Димон", rarity: "common", hp: 190, dmg: 26, speed: 0.7, cd: 4000, atkSpeed: 1000, icon: "🧢", reqCups: 0 },
+            zheka: { id: 'zheka', name: "Жека", rarity: "common", hp: 210, dmg: 32, speed: 0.6, cd: 5000, atkSpeed: 1200, icon: "🚬", reqCups: 0 },
+            oleg: { id: 'oleg', name: "Олег", rarity: "common", hp: 320, dmg: 42, speed: 0.5, cd: 6000, atkSpeed: 1500, icon: "💪", reqCups: 0 },
+            sanya: { id: 'sanya', name: "Саня", rarity: "epic", hp: 370, dmg: 55, speed: 0.7, cd: 7500, atkSpeed: 1000, icon: "🎸", reqCups: 100 },
+            serega: { id: 'serega', name: "Серега", rarity: "epic", hp: 480, dmg: 65, speed: 0.6, cd: 8500, atkSpeed: 1200, icon: "🥊", reqCups: 250 },
+            mikha: { id: 'mikha', name: "Миха", rarity: "mythic", hp: 550, dmg: 85, speed: 1.1, cd: 11000, atkSpeed: 900, icon: "🏍️", reqCups: 500 },
+            vovan: { id: 'vovan', name: "Вован", rarity: "mythic", hp: 750, dmg: 110, speed: 0.6, cd: 13000, atkSpeed: 1500, icon: "🕴️", reqCups: 800 },
+            batya: { id: 'batya', name: "Батя", rarity: "legendary", hp: 1600, dmg: 160, speed: 0.4, cd: 16000, atkSpeed: 2000, icon: "👑", reqCups: 1500 },
+            ruslan: { id: 'ruslan', name: "Руслан", rarity: "legendary", hp: 2200, dmg: 220, speed: 0.5, cd: 22000, atkSpeed: 1800, icon: "😎", reqCups: 2000 }
         };
+
+        const ROAD_REWARDS = [
+            { cups: 100, type: 'case_common', name: 'Обычный кейс 📦' },
+            { cups: 170, type: 'token', name: 'Токен прокачки 💎', qty: 1 },
+            { cups: 250, type: 'case_rare', name: 'Необычный кейс 🟢' },
+            { cups: 400, type: 'case_epic', name: 'Эпический кейс 🟣' },
+            { cups: 700, type: 'token', name: 'Токены прокачки (x5) 💎', qty: 5 },
+            { cups: 1000, type: 'case_mythic', name: 'Мифический кейс 🔴' },
+            { cups: 1500, type: 'case_legendary', name: 'Легендарный кейс 🟡' }
+        ];
 
         let currentUsername = null, userData = null;
         let currentBattleId = null, isPlayer1 = false, battleP1 = null;
-        
-        let searchInt = null, queueUnsub = null, battleUnsub = null, spawnsUnsub = null;
-        
-        let selectedDeckSlot = 0;
-        let cardCooldowns = {}; 
-        let selectedCardInBattle = null;
+        let searchInt = null, queueUnsub = null, battleUnsub = null, spawnsUnsub = null, profileUnsub = null;
+        let selectedDeckSlot = 0, cardCooldowns = {}, selectedCardInBattle = null;
+        let troops = [], gameLoop = null;
 
-        // Движок игры
-        let troops = [];
-        let gameLoop = null;
+        // МУЗЫКА (Нудная, но веселая 8-битная)
+        const bgMusic = new Audio('https://freepd.com/music/Komiku_-_12_-_Bicycle.mp3');
+        bgMusic.loop = true;
+        bgMusic.volume = 0.4;
+        let isSoundOn = true;
+
+        document.body.addEventListener('click', () => {
+            if(isSoundOn && bgMusic.paused) bgMusic.play().catch(e => console.log("Audio play blocked until more interaction"));
+        }, {once: true});
 
         window.showMsg = (title, text) => {
             document.getElementById('msg-title').innerText = title;
@@ -216,35 +315,60 @@
         function showScreen(name) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(name).classList.add('active');
+            if(name === 'menu-screen') updateMainMenuDeck();
         }
 
-        // --- ВКЛАДКИ ---
-        document.getElementById('tab-battle').onclick = () => {
-            document.getElementById('tab-battle').classList.add('active-tab');
-            document.getElementById('tab-fighters').classList.remove('active-tab');
-            document.getElementById('section-battle').style.display = 'flex';
-            document.getElementById('section-fighters').style.display = 'none';
-        };
-        document.getElementById('tab-fighters').onclick = () => {
-            document.getElementById('tab-fighters').classList.add('active-tab');
-            document.getElementById('tab-battle').classList.remove('active-tab');
-            document.getElementById('section-battle').style.display = 'none';
-            document.getElementById('section-fighters').style.display = 'flex';
-            renderDeck();
-        };
+        // Вкладки
+        const tabs = ['battle', 'fighters', 'road', 'friends'];
+        tabs.forEach(t => {
+            document.getElementById('tab-'+t).onclick = () => {
+                tabs.forEach(x => {
+                    document.getElementById('tab-'+x).classList.remove('active-tab');
+                    document.getElementById('section-'+x).style.display = 'none';
+                });
+                document.getElementById('tab-'+t).classList.add('active-tab');
+                document.getElementById('section-'+t).style.display = 'flex';
+                if(t === 'fighters') renderDeck();
+                if(t === 'road') renderRoad();
+                if(t === 'friends') renderFriends();
+            };
+        });
 
-        // --- АВТОРИЗАЦИЯ ---
-        document.getElementById('btn-auth').onclick = async () => {
+        // СТАРЫЙ РАЗДЕЛЬНЫЙ ВХОД И РЕГИСТРАЦИЯ
+        document.getElementById('btn-login').onclick = async () => {
             const userInp = document.getElementById('auth-username').value.trim().toLowerCase();
             const passInp = document.getElementById('auth-password').value;
-            if(!userInp || !passInp) return showMsg("Ошибка", "Заполни поля!");
+            if(!userInp || !passInp) return showMsg("Ошибка", "Заполни поля ввода!");
 
             const userSnap = await getDoc(doc(db, "users", userInp));
             if (userSnap.exists()) {
-                if (userSnap.data().password === passInp) loginSuccess(userInp, userSnap.data());
-                else showMsg("Ошибка", "Неверный пароль!");
+                if (userSnap.data().password === passInp) {
+                    await updateDoc(doc(db, "users", userInp), { online: true, device: myDevice });
+                    loginSuccess(userInp, userSnap.data());
+                } else {
+                    showMsg("Ошибка", "Неверный пароль бродяга!");
+                }
             } else {
-                const newData = { password: passInp, cups: 0, deck: ['maks', 'dimon', 'zheka', 'oleg'] };
+                showMsg("Ошибка", "Такой логин не зарегистрирован!");
+            }
+        };
+
+        document.getElementById('btn-register').onclick = async () => {
+            const userInp = document.getElementById('auth-username').value.trim().toLowerCase();
+            const passInp = document.getElementById('auth-password').value;
+            if(!userInp || !passInp) return showMsg("Ошибка", "Заполни поля ввода!");
+            if(userInp.length < 3) return showMsg("Ошибка", "Логин слишком короткий!");
+
+            const userSnap = await getDoc(doc(db, "users", userInp));
+            if (userSnap.exists()) {
+                showMsg("Ошибка", "Этот логин уже занят другим игроком!");
+            } else {
+                const newData = { 
+                    password: passInp, cups: 0, tokens: 0, claimed: [], friends: [], requests: [],
+                    online: true, device: myDevice,
+                    deck: ['maks', 'dimon', 'zheka', 'oleg'],
+                    levels: { maks:1, dimon:1, zheka:1, oleg:1, sanya:1, serega:1, mikha:1, vovan:1, batya:1, ruslan:1 }
+                };
                 await setDoc(doc(db, "users", userInp), newData);
                 loginSuccess(userInp, newData);
             }
@@ -254,27 +378,175 @@
             currentUsername = username;
             userData = data;
             if(userData.cups === undefined) userData.cups = 0;
-            if(!userData.deck) userData.deck = ['maks', 'dimon', 'zheka', 'oleg'];
+            if(userData.tokens === undefined) userData.tokens = 0;
+            if(!userData.claimed) userData.claimed = [];
+            if(!userData.friends) userData.friends = [];
+            if(!userData.requests) userData.requests = [];
+            if(!userData.levels) { userData.levels = {}; Object.keys(ALL_FIGHTERS).forEach(k => userData.levels[k] = 1); }
+            
             localStorage.setItem('clash_ruslan_user', currentUsername);
             document.getElementById('user-name').innerText = currentUsername;
             document.getElementById('user-cups').innerText = userData.cups;
+            document.getElementById('user-tokens').innerText = userData.tokens;
+            
+            // Подписка на обновления профиля в реальном времени (для заявок в друзья)
+            profileUnsub = onSnapshot(doc(db, "users", currentUsername), (dSnap) => {
+                if(dSnap.exists()) {
+                    userData = dSnap.data();
+                    if(!userData.requests) userData.requests = [];
+                    if(!userData.friends) userData.friends = [];
+                    if(document.getElementById('section-friends').style.display === 'flex') renderFriends();
+                }
+            });
+            
             showScreen('menu-screen');
+            if(isSoundOn) bgMusic.play().catch(e=>{});
         }
 
         window.addEventListener('DOMContentLoaded', async () => {
             const saved = localStorage.getItem('clash_ruslan_user');
             if (saved) {
                 const snap = await getDoc(doc(db, "users", saved));
-                if(snap.exists()) loginSuccess(saved, snap.data());
+                if(snap.exists()) {
+                    await updateDoc(doc(db, "users", saved), { online: true, device: myDevice });
+                    loginSuccess(saved, snap.data());
+                }
             }
         });
 
-        document.getElementById('btn-logout').onclick = () => {
-            localStorage.removeItem('clash_ruslan_user');
-            location.reload();
+        // НАСТРОЙКИ: Логаут, Звук, Удаление
+        document.getElementById('btn-toggle-sound').onclick = () => {
+            isSoundOn = !isSoundOn;
+            if(isSoundOn) {
+                bgMusic.play().catch(e=>{});
+                document.getElementById('btn-toggle-sound').innerText = "Выключить звук 🔇";
+            } else {
+                bgMusic.pause();
+                document.getElementById('btn-toggle-sound').innerText = "Включить звук 🔊";
+            }
         };
 
-        // --- РЕДАКТОР КОЛОДЫ ---
+        document.getElementById('btn-settings-logout').onclick = async () => {
+            if(currentUsername) await updateDoc(doc(db, "users", currentUsername), { online: false });
+            localStorage.removeItem('clash_ruslan_user'); location.reload();
+        };
+
+        let deleteStage = 0;
+        document.getElementById('btn-settings-delete').onclick = () => {
+            const btn = document.getElementById('btn-settings-delete');
+            if(deleteStage === 0) {
+                deleteStage = 1;
+                btn.disabled = true;
+                let s = 3;
+                btn.innerText = `Точно удалить? (${s})`;
+                let intv = setInterval(() => {
+                    s--;
+                    btn.innerText = `Точно удалить? (${s})`;
+                    if(s <= 0) {
+                        clearInterval(intv);
+                        btn.disabled = false;
+                        btn.innerText = "Да, удалить навсегда!";
+                        deleteStage = 2;
+                    }
+                }, 1000);
+            } else if (deleteStage === 2) {
+                // Полное удаление аккаунта
+                deleteDoc(doc(db, "users", currentUsername)).then(() => {
+                    localStorage.removeItem('clash_ruslan_user');
+                    location.reload();
+                });
+            }
+        };
+
+        // ДРУЗЬЯ (Система заявок)
+        document.getElementById('btn-add-friend').onclick = async () => {
+            const name = document.getElementById('friend-username').value.trim().toLowerCase();
+            if(!name || name === currentUsername) return showMsg("Ошибка", "Некорректный логин");
+            if(userData.friends.includes(name)) return showMsg("Ошибка", "Уже в друзьях!");
+
+            const fSnap = await getDoc(doc(db, "users", name));
+            if(!fSnap.exists()) return showMsg("Ошибка", "Игрок не найден");
+            
+            let fData = fSnap.data();
+            let reqs = fData.requests || [];
+            if(reqs.includes(currentUsername)) return showMsg("Внимание", "Заявка уже отправлена!");
+            
+            reqs.push(currentUsername);
+            await updateDoc(doc(db, "users", name), { requests: reqs });
+            document.getElementById('friend-username').value = "";
+            showMsg("Успех", "Заявка в друзья отправлена!");
+        };
+
+        async function renderFriends() {
+            // Отрисовка заявок
+            const reqContainer = document.getElementById('requests-list');
+            if(userData.requests && userData.requests.length > 0) {
+                let rHtml = "";
+                userData.requests.forEach(rName => {
+                    rHtml += `
+                        <div class="friend-item">
+                            <strong style="color:#f1c40f;">${rName}</strong>
+                            <div class="request-btns">
+                                <button class="btn-accept" onclick="answerRequest('${rName}', true)">✅</button>
+                                <button class="btn-decline" onclick="answerRequest('${rName}', false)">❌</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                reqContainer.innerHTML = rHtml;
+            } else {
+                reqContainer.innerHTML = "<span style='font-size:0.9rem; color:#bdc3c7;'>Нет новых заявок</span>";
+            }
+
+            // Отрисовка друзей
+            const fContainer = document.getElementById('friends-list');
+            if(userData.friends && userData.friends.length > 0) {
+                fContainer.innerHTML = 'Загрузка...';
+                let html = "";
+                for(let fName of userData.friends) {
+                    const fSnap = await getDoc(doc(db, "users", fName));
+                    if(fSnap.exists()) {
+                        const d = fSnap.data();
+                        const statusText = d.online ? '<span style="color:#2ecc71; font-weight:bold;">В сети 🟢</span>' : '<span style="color:#95a5a6;">Оффлайн 🔴</span>';
+                        html += `
+                            <div class="friend-item">
+                                <div>
+                                    <strong style="font-size:1.1rem; color:#f1c40f;">${fName}</strong><br>
+                                    <span style="font-size:0.85rem; color:#bdc3c7;">Девайс: ${d.device || 'Неизвестно'}</span>
+                                </div>
+                                <div style="text-align:right;">
+                                    🏆 ${d.cups || 0}<br>${statusText}
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+                fContainer.innerHTML = html;
+            } else {
+                fContainer.innerHTML = "<p>Пока нет друзей. Отправь кому-то запрос!</p>";
+            }
+        }
+
+        window.answerRequest = async (requesterName, isAccepted) => {
+            let newReqs = userData.requests.filter(r => r !== requesterName);
+            let updateObj = { requests: newReqs };
+            
+            if(isAccepted) {
+                userData.friends.push(requesterName);
+                updateObj.friends = userData.friends;
+                
+                // Добавляем себя к нему в список
+                const rSnap = await getDoc(doc(db, "users", requesterName));
+                if(rSnap.exists()) {
+                    let hisFriends = rSnap.data().friends || [];
+                    if(!hisFriends.includes(currentUsername)) hisFriends.push(currentUsername);
+                    await updateDoc(doc(db, "users", requesterName), { friends: hisFriends });
+                }
+            }
+            await updateDoc(doc(db, "users", currentUsername), updateObj);
+        };
+
+        // Прокачка и колода
         window.selectSlot = (index) => {
             selectedDeckSlot = index;
             for(let i=0; i<4; i++) document.getElementById('slot-'+i).classList.remove('selected');
@@ -284,56 +556,99 @@
         window.equipCard = async (fighterId) => {
             if(userData.deck.includes(fighterId)) return showMsg("Внимание", "Уже в колоде!");
             userData.deck[selectedDeckSlot] = fighterId;
+            renderDeck(); updateMainMenuDeck();
+            await updateDoc(doc(db, "users", currentUsername), { deck: userData.deck });
+        };
+
+        window.upgradeFighter = async (fighterId) => {
+            if(userData.tokens < 1) return showMsg("Нет токенов", "Забирай токены прокачки на Пути славы!");
+            userData.tokens -= 1;
+            userData.levels[fighterId] = (userData.levels[fighterId] || 1) + 1;
+            
+            document.getElementById('user-tokens').innerText = userData.tokens;
             renderDeck();
-            await setDoc(doc(db, "users", currentUsername), { deck: userData.deck }, { merge: true });
+            await updateDoc(doc(db, "users", currentUsername), { tokens: userData.tokens, levels: userData.levels });
+            showMsg("Успех! ✨", `${ALL_FIGHTERS[fighterId].name} прокачан до ${userData.levels[fighterId]} уровня!`);
         };
 
         function renderDeck() {
-            for(let i=0; i<4; i++) document.getElementById('slot-'+i).innerText = ALL_FIGHTERS[userData.deck[i]].icon;
-            
-            const container = document.getElementById('cards-list');
-            container.innerHTML = '';
+            for(let i=0; i<4; i++) {
+                document.getElementById('slot-'+i).innerText = ALL_FIGHTERS[userData.deck[i]].icon;
+            }
+            const container = document.getElementById('cards-list'); container.innerHTML = '';
             for (const [key, bData] of Object.entries(ALL_FIGHTERS)) {
-                const isUnl = userData.cups >= bData.reqCups;
-                const cardDiv = document.createElement('div');
-                cardDiv.className = `card rarity-${bData.rarity}`;
-                
+                const isUnl = userData.cups >= bData.reqCups; const lvl = userData.levels[key] || 1;
+                const cardDiv = document.createElement('div'); cardDiv.className = `card rarity-${bData.rarity}`;
                 if(!isUnl) {
                     cardDiv.innerHTML = `<div class="locked-overlay">🔒<br>🏆 ${bData.reqCups}</div><div style="font-size: 1.5rem; opacity:0.5;">${bData.icon}</div><h3>${bData.name}</h3>`;
                 } else {
-                    cardDiv.onclick = () => equipCard(key);
-                    cardDiv.innerHTML = `<div style="font-size: 1.8rem;">${bData.icon}</div><h3>${bData.name}</h3>
-                        <div class="stats">ХП: ${bData.hp}<br>Урон: ${bData.dmg}</div>`;
+                    cardDiv.innerHTML = `
+                        <div style="font-size: 1.6rem;" onclick="equipCard('${key}')">${bData.icon}</div>
+                        <h3 onclick="equipCard('${key}')">${bData.name}</h3>
+                        <div class="stats" onclick="equipCard('${key}')">Ур. ${lvl}<br>⚔️ ${bData.dmg + (lvl-1)*10}</div>
+                        <button style="font-size:0.65rem; padding:3px 5px; margin:0;" onclick="upgradeFighter('${key}')">Ап 💎1</button>
+                    `;
                 }
                 container.appendChild(cardDiv);
             }
         }
 
-        // --- МАТЧМЕЙКИНГ ---
+        // Обновление колоды в главном меню
+        function updateMainMenuDeck() {
+            if(!userData || !userData.deck) return;
+            for(let i=0; i<4; i++) {
+                let el = document.getElementById('main-slot-'+i);
+                if(el) el.innerText = ALL_FIGHTERS[userData.deck[i]].icon;
+            }
+        }
+
+        // Путь славы
+        function renderRoad() {
+            const container = document.getElementById('road-list'); container.innerHTML = '';
+            ROAD_REWARDS.forEach((r, idx) => {
+                const isReached = userData.cups >= r.cups; const isClaimed = userData.claimed.includes(idx);
+                const div = document.createElement('div'); div.className = `road-item ${isReached ? 'unlocked' : ''}`;
+                let btnHtml = `<button style="background:#7f8c8d; border:none;" disabled>🔒 Закрыто</button>`;
+                if(isReached) { btnHtml = isClaimed ? `<span style="color:#2ecc71; font-weight:bold;">Взято ✓</span>` : `<button style="background:#2ecc71; border-color:#27ae60;" onclick="claimReward(${idx})">Забрать</button>`; }
+                div.innerHTML = `<div class="road-cup-badge">🏆 ${r.cups}</div><div style="font-weight:bold; font-size:0.95rem;">${r.name}</div><div>${btnHtml}</div>`;
+                container.appendChild(div);
+            });
+        }
+
+        window.claimReward = async (idx) => {
+            if(userData.claimed.includes(idx)) return;
+            const reward = ROAD_REWARDS[idx]; userData.claimed.push(idx);
+            let tkBonus = reward.type === 'case_legendary' ? 8 : reward.type === 'case_mythic' ? 5 : reward.type === 'case_epic' ? 3 : 1;
+            userData.tokens += tkBonus;
+            document.getElementById('user-tokens').innerText = userData.tokens;
+            renderRoad();
+            await updateDoc(doc(db, "users", currentUsername), { claimed: userData.claimed, tokens: userData.tokens });
+            showMsg("Награда!", `Ты открыл ${reward.name}! Получено: Токены +${tkBonus} 💎!`);
+        };
+
+        // ОТКРЫТЫЙ БАЛАНС МАТЧМЕЙКИНГА
         document.getElementById('btn-search-match').onclick = async () => {
-            document.getElementById('search-overlay').classList.add('active');
-            let secs = 0; document.getElementById('search-timer').innerText = secs;
-            
+            document.getElementById('search-overlay').classList.add('active'); let secs = 0;
             searchInt = setInterval(() => {
-                secs++; document.getElementById('search-timer').innerText = secs;
-                if(secs >= 60) { cancelSearch(); showMsg("Время вышло", "Нет противников."); }
+                secs++; let m = Math.floor(secs / 60); let s = secs % 60;
+                document.getElementById('search-timer').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+                if(secs >= 76) { cancelSearch(); showMsg("Время вышло", "В сети пока никого, позови друга!"); }
             }, 1000);
 
             const q = query(collection(db, "matchmaking"), where("status", "==", "waiting"));
-            const qSnap = await getDocs(q);
-            let found = null;
-            qSnap.forEach((d) => { if (d.id !== currentUsername && !found) found = d.id; });
+            const qSnap = await getDocs(q); let found = null, opDev = "";
+            qSnap.forEach((d) => { if (d.id !== currentUsername && !found) { found = d.id; opDev = d.data().device; } });
 
             if (found) {
                 const bId = found + "_vs_" + currentUsername;
-                await updateDoc(doc(db, "matchmaking", found), { status: "matched", battleId: bId });
-                await setDoc(doc(db, "battles", bId), { p1: found, p2: currentUsername, hp1: 2000, hp2: 2000, active: true });
-                matchFoundSequence(bId, found, false, found);
+                await updateDoc(doc(db, "matchmaking", found), { status: "matched", battleId: bId, oppDevice: myDevice });
+                await setDoc(doc(db, "battles", bId), { p1: found, p2: currentUsername, hp1: 1250, hp2: 1250, active: true, msg1: "", msg2: "" });
+                matchFoundSequence(bId, found, false, found, opDev);
             } else {
-                await setDoc(doc(db, "matchmaking", currentUsername), { status: "waiting", timestamp: Date.now() });
+                await setDoc(doc(db, "matchmaking", currentUsername), { status: "waiting", device: myDevice, timestamp: Date.now() });
                 queueUnsub = onSnapshot(doc(db, "matchmaking", currentUsername), (dSnap) => {
                     if (dSnap.exists() && dSnap.data().status === "matched") {
-                        matchFoundSequence(dSnap.data().battleId, dSnap.data().battleId.split("_vs_")[1], true, currentUsername);
+                        matchFoundSequence(dSnap.data().battleId, dSnap.data().battleId.split("_vs_")[1], true, currentUsername, dSnap.data().oppDevice || "Мобилка 📱");
                     }
                 });
             }
@@ -345,177 +660,155 @@
             await deleteDoc(doc(db, "matchmaking", currentUsername));
         };
 
-        function matchFoundSequence(bId, opponent, isP1, p1Name) {
+        function matchFoundSequence(bId, opponent, isP1, p1Name, deviceText) {
             clearInterval(searchInt); if(queueUnsub) queueUnsub();
             document.getElementById('search-overlay').classList.remove('active');
-            
             document.getElementById('found-overlay').classList.add('active');
             document.getElementById('found-enemy-name').innerText = opponent;
+            document.getElementById('found-enemy-device').innerText = deviceText;
             
             let st = 5; document.getElementById('found-timer').innerText = st;
             const sInt = setInterval(() => {
                 st--; document.getElementById('found-timer').innerText = st;
-                if(st <= 0) {
-                    clearInterval(sInt);
-                    document.getElementById('found-overlay').classList.remove('active');
-                    startBattle(bId, opponent, isP1, p1Name);
-                }
+                if(st <= 0) { clearInterval(sInt); document.getElementById('found-overlay').classList.remove('active'); startBattle(bId, opponent, isP1, p1Name); }
             }, 1000);
         }
 
-        // --- ЛОГИКА БОЯ ---
+        // Бой
         function startBattle(bId, opponent, isP1, p1Name) {
-            currentBattleId = bId;
-            isPlayer1 = isP1;
-            battleP1 = p1Name;
+            currentBattleId = bId; isPlayer1 = isP1; battleP1 = p1Name;
             document.getElementById('opponent-name').innerText = opponent;
             cardCooldowns = {}; troops = []; selectedCardInBattle = null;
-            
             document.querySelectorAll('.troop').forEach(t => t.remove());
-            showScreen('battle-screen');
-            setupBattleDeck();
+            showScreen('battle-screen'); setupBattleDeck();
 
             battleUnsub = onSnapshot(doc(db, "battles", currentBattleId), (docSnap) => {
                 if(!docSnap.exists() || !docSnap.data().active) return;
                 const d = docSnap.data();
-                const myHp = isPlayer1 ? d.hp1 : d.hp2;
-                const enHp = isPlayer1 ? d.hp2 : d.hp1;
-                document.getElementById('my-hp').innerText = myHp;
-                document.getElementById('enemy-hp').innerText = enHp;
+                const myHp = isPlayer1 ? d.hp1 : d.hp2; const enHp = isPlayer1 ? d.hp2 : d.hp1;
+                document.getElementById('my-hp').innerText = myHp; document.getElementById('enemy-hp').innerText = enHp;
+
+                const myMsg = isPlayer1 ? d.msg1 : d.msg2; const enMsg = isPlayer1 ? d.msg2 : d.msg1;
+                if(myMsg) showBubble('my-chat', myMsg); if(enMsg) showBubble('enemy-chat', enMsg);
                 if (myHp <= 0 || enHp <= 0) endBattle(myHp > 0);
             });
 
-            // Слушаем спавны от обоих игроков
             spawnsUnsub = onSnapshot(collection(db, "battles", currentBattleId, "spawns"), (snap) => {
                 snap.docChanges().forEach(change => {
                     if(change.type === "added") {
-                        const d = change.doc.data();
-                        const f = ALL_FIGHTERS[d.type];
+                        const d = change.doc.data(); const f = ALL_FIGHTERS[d.type]; const lvl = d.level || 1;
                         troops.push({
-                            id: change.doc.id, owner: d.owner, lane: d.lane, y: d.y,
-                            dir: d.owner === battleP1 ? 1 : -1, // P1 всегда идет снизу вверх (0 -> 100)
-                            hp: f.hp, maxHp: f.hp, dmg: f.dmg, speed: f.speed, atkSpeed: f.atkSpeed,
-                            lastAttack: 0, icon: f.icon
+                            id: change.doc.id, owner: d.owner, x: d.x, y: d.y,
+                            hp: f.hp + (lvl-1)*25, maxHp: f.hp + (lvl-1)*25, dmg: f.dmg + (lvl-1)*10,
+                            speed: f.speed, atkSpeed: f.atkSpeed, lastAttack: 0, icon: f.icon
                         });
                     }
                 });
             });
 
-            // Запуск локального движка (30 FPS)
             if(gameLoop) clearInterval(gameLoop);
-            gameLoop = setInterval(runGameEngine, 33);
+            gameLoop = setInterval(runGameEngine, 40);
         }
 
+        window.sendChat = async (text) => {
+            if(!currentBattleId) return; const bRef = doc(db, "battles", currentBattleId);
+            if(isPlayer1) await updateDoc(bRef, { msg1: text }); else await updateDoc(bRef, { msg2: text });
+            setTimeout(async () => { if(!currentBattleId) return; if(isPlayer1) await updateDoc(bRef, { msg1: "" }); else await updateDoc(bRef, { msg2: "" }); }, 2000);
+        };
+
+        function showBubble(id, text) { const el = document.getElementById(id); el.innerText = text; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 1800); }
+
         function setupBattleDeck() {
-            const deck = document.getElementById('battle-deck');
-            deck.innerHTML = '';
+            const deck = document.getElementById('battle-deck'); deck.innerHTML = '';
             userData.deck.forEach((k, index) => {
-                const f = ALL_FIGHTERS[k];
-                const btn = document.createElement('div');
-                btn.className = 'battle-card rarity-' + f.rarity;
-                btn.id = 'battle-card-' + index;
-                btn.innerHTML = `<div class="cooldown-overlay" id="cd-${index}"></div>
-                    <span style="font-size: 2rem; z-index:3; pointer-events:none;">${f.icon}</span>`;
-                
-                btn.onclick = () => selectCardInBattle(index);
-                deck.appendChild(btn);
+                const f = ALL_FIGHTERS[k]; const btn = document.createElement('div');
+                btn.className = 'battle-card rarity-' + f.rarity; btn.id = 'battle-card-' + index;
+                btn.innerHTML = `<div class="cooldown-overlay" id="cd-${index}"></div><span style="font-size:1.8rem; z-index:3; pointer-events:none;">${f.icon}</span>`;
+                btn.onclick = () => selectCardInBattle(index); deck.appendChild(btn);
             });
         }
 
         window.selectCardInBattle = (index) => {
             if(cardCooldowns[index]) return;
             document.querySelectorAll('.battle-card').forEach(c => c.classList.remove('selected-in-battle'));
-            selectedCardInBattle = index;
-            document.getElementById('battle-card-'+index).classList.add('selected-in-battle');
+            selectedCardInBattle = index; document.getElementById('battle-card-'+index).classList.add('selected-in-battle');
         };
 
-        // Клик по арене (Высадка)
+        // СВОБОДНЫЙ СПАВН НА СВОЕЙ ТЕРРИТОРИИ
         document.getElementById('arena-container').onclick = async (e) => {
             if(selectedCardInBattle === null) return;
-            
             const rect = document.getElementById('arena-container').getBoundingClientRect();
-            const clickY = e.clientY - rect.top;
-            const clickX = e.clientX - rect.left;
+            const clickX = e.clientX - rect.left; const clickY = e.clientY - rect.top;
             
-            if(clickY < rect.height / 2) {
-                showMsg("Эй!", "Можно высаживать братву только на своей половине!");
-                return;
-            }
+            let percentX = (clickX / rect.width) * 100;
+            let percentY = (clickY / rect.height) * 100;
+            
+            if(percentY < 52) return showMsg("Эй!", "Высаживай братву на своей половине арены!");
 
-            const lane = (clickX < rect.width / 2) ? 1 : 2;
-            const index = selectedCardInBattle;
-            const fId = userData.deck[index];
-            const f = ALL_FIGHTERS[fId];
-            
-            // Запуск кулдауна
-            cardCooldowns[index] = true;
-            selectedCardInBattle = null;
+            const index = selectedCardInBattle; const fId = userData.deck[index]; const f = ALL_FIGHTERS[fId];
+            cardCooldowns[index] = true; selectedCardInBattle = null;
             document.querySelectorAll('.battle-card').forEach(c => c.classList.remove('selected-in-battle'));
             
-            const cdEl = document.getElementById(`cd-${index}`);
-            cdEl.style.transition = 'none'; cdEl.style.height = '100%';
+            const cdEl = document.getElementById(`cd-${index}`); cdEl.style.transition = 'none'; cdEl.style.height = '100%';
             setTimeout(() => { cdEl.style.transition = `height ${f.cd}ms linear`; cdEl.style.height = '0%'; }, 50);
             setTimeout(() => { cardCooldowns[index] = false; }, f.cd);
 
-            // Отправка в БД
-            const startY = isPlayer1 ? 5 : 95; // P1 стартует около 0, P2 около 100
+            let serverX = isPlayer1 ? percentX : 100 - percentX;
+            let serverY = isPlayer1 ? percentY : 100 - percentY;
+
             await addDoc(collection(db, "battles", currentBattleId, "spawns"), {
-                owner: currentUsername, type: fId, lane: lane, y: startY, time: Date.now()
+                owner: currentUsername, type: fId, level: (userData.levels[fId] || 1), x: serverX, y: serverY, time: Date.now()
             });
         };
 
-        // --- ИГРОВОЙ ДВИЖОК ---
+        // УМНЫЙ ЖИВОЙ ИИ
         function runGameEngine() {
             if(!currentBattleId) return;
-
+            
             troops.forEach(t => {
                 if(t.hp <= 0) return;
                 
-                // Поиск врага
-                let enemies = troops.filter(e => e.owner !== t.owner && e.lane === t.lane && e.hp > 0);
-                let closest = null; let minDist = 100;
+                let enemies = troops.filter(e => e.owner !== t.owner && e.hp > 0);
+                let closestEnemy = null; let minDist = 1000;
                 
                 enemies.forEach(e => {
-                    if(t.dir === 1 && e.y < t.y) return; // Враг должен быть впереди
-                    if(t.dir === -1 && e.y > t.y) return;
-                    let d = Math.abs(t.y - e.y);
-                    if(d < minDist) { minDist = d; closest = e; }
+                    let d = Math.hypot(e.x - t.x, e.y - t.y);
+                    if(d < minDist) { minDist = d; closestEnemy = e; }
                 });
 
-                if(closest && minDist <= 5) { // Бой
-                    if(Date.now() - t.lastAttack >= t.atkSpeed) {
-                        closest.hp -= t.dmg;
-                        t.lastAttack = Date.now();
-                        let el = document.getElementById('troop-'+t.id);
-                        if(el) { el.style.transform = 'translate(-50%, -50%) scale(1.3)'; setTimeout(()=>el.style.transform='translate(-50%, -50%) scale(1)', 100); }
+                let tx = 50, ty = (t.owner === battleP1) ? 10 : 90;
+
+                if (closestEnemy && minDist <= 32) {
+                    tx = closestEnemy.x; ty = closestEnemy.y;
+                } else {
+                    let needsToCross = (t.owner === battleP1 && t.y > 50) || (t.owner !== battleP1 && t.y < 50);
+                    if (needsToCross) {
+                        let bridgeX = (t.x < 50) ? 28 : 72;
+                        tx = bridgeX; ty = 50;
                     }
-                } else { // Идет вперед
-                    t.y += t.dir * t.speed;
-                    
-                    // Дошел до базы
-                    if(t.dir === 1 && t.y >= 100) {
-                        t.hp = 0; if(t.owner === currentUsername) damageBase(t.dmg);
-                    } else if(t.dir === -1 && t.y <= 0) {
-                        t.hp = 0; if(t.owner === currentUsername) damageBase(t.dmg);
-                    }
+                }
+
+                let angle = Math.atan2(ty - t.y, tx - t.x);
+                let currentDist = Math.hypot(tx - t.x, ty - t.y);
+
+                if (closestEnemy && currentDist <= 5) {
+                    if (Date.now() - t.lastAttack >= t.atkSpeed) { closestEnemy.hp -= t.dmg; t.lastAttack = Date.now(); }
+                } else if (!closestEnemy && ((t.owner === battleP1 && t.y <= 12) || (t.owner !== battleP1 && t.y >= 88))) {
+                    t.hp = 0; if(t.owner === currentUsername) damageBase(t.dmg);
+                } else {
+                    t.x += Math.cos(angle) * t.speed;
+                    t.y += Math.sin(angle) * t.speed;
                 }
             });
 
-            // Очистка мертвых
-            troops = troops.filter(t => {
-                if(t.hp <= 0) { let el = document.getElementById('troop-'+t.id); if(el) el.remove(); return false; }
-                return true;
-            });
-
+            troops = troops.filter(t => { if(t.hp <= 0) { let el = document.getElementById('troop-'+t.id); if(el) el.remove(); return false; } return true; });
             renderTroops();
         }
 
         async function damageBase(dmg) {
-            const bRef = doc(db, "battles", currentBattleId);
-            const snap = await getDoc(bRef);
+            const bRef = doc(db, "battles", currentBattleId); const snap = await getDoc(bRef);
             if(snap.exists() && snap.data().active) {
-                if(isPlayer1) updateDoc(bRef, { hp2: snap.data().hp2 - dmg });
-                else updateDoc(bRef, { hp1: snap.data().hp1 - dmg });
+                if(isPlayer1) updateDoc(bRef, { hp2: snap.data().hp2 - dmg }); else updateDoc(bRef, { hp1: snap.data().hp1 - dmg });
             }
         }
 
@@ -527,32 +820,25 @@
                     el.innerHTML = `<div class="hp-bar-bg"><div class="hp-bar" id="hp-${t.id}"></div></div>${t.icon}`;
                     document.getElementById('arena-container').appendChild(el);
                 }
-                
                 document.getElementById('hp-'+t.id).style.width = Math.max(0, (t.hp / t.maxHp) * 100) + '%';
-                el.style.left = t.lane === 1 ? '25%' : '75%';
-                el.style.top = (isPlayer1 ? 100 - t.y : t.y) + '%'; // Всегда видим свою базу внизу
+                
+                let renderX = isPlayer1 ? t.x : 100 - t.x;
+                let renderY = isPlayer1 ? t.y : 100 - t.y;
+                el.style.left = renderX + '%'; el.style.top = renderY + '%';
             });
         }
 
         async function endBattle(isWin) {
-            clearInterval(gameLoop);
-            if(battleUnsub) battleUnsub();
-            if(spawnsUnsub) spawnsUnsub();
-            
-            // Если мы хост (Игрок 1), мы закрываем комнату чтобы избежать дублей
+            clearInterval(gameLoop); if(battleUnsub) battleUnsub(); if(spawnsUnsub) spawnsUnsub();
             if(isPlayer1) await updateDoc(doc(db, "battles", currentBattleId), { active: false });
-            currentBattleId = null;
+            currentBattleId = null; await deleteDoc(doc(db, "matchmaking", currentUsername));
             
-            await deleteDoc(doc(db, "matchmaking", currentUsername));
-            
-            if(isWin) userData.cups += 30;
-            else { userData.cups -= 20; if(userData.cups < 0) userData.cups = 0; }
-
+            if(isWin) userData.cups += 30; else { userData.cups -= 20; if(userData.cups < 0) userData.cups = 0; }
             await setDoc(doc(db, "users", currentUsername), { cups: userData.cups }, { merge: true });
             document.getElementById('user-cups').innerText = userData.cups;
             
             showScreen('menu-screen');
-            showMsg(isWin ? "🏆 ПОБЕДА!" : "💀 ПОРАЖЕНИЕ", isWin ? "Ты разнес базу! +30 🏆" : "Твою базу стерли... -20 🏆");
+            showMsg(isWin ? "🏆 ПОБЕДА!" : "💀 ПОРАЖЕНИЕ", isWin ? "Ты снес вышку! +30 🏆" : "Твоя база пала... -20 🏆");
         }
     </script>
 </body>
