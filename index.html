@@ -132,10 +132,14 @@
                 <input type="text" id="create-clan-tag" placeholder="Тег клана (например: RUS)" maxlength="4">
                 <button class="menu-btn" onclick="handleCreateClan()" style="background-color: #2ecc71; box-shadow: 0 4px #27ae60; margin-top:10px;">Создать</button>
             </div>
-            <div class="auth-form">
+            <div class="auth-form" style="margin-bottom: 20px;">
                 <h3>Вступить в существующий</h3>
                 <input type="text" id="join-clan-id" placeholder="Введи ID клана">
                 <button class="menu-btn" onclick="handleJoinClan()" style="background-color: #3498db; box-shadow: 0 4px #2980b9; margin-top:10px;">Вступить</button>
+            </div>
+            <div class="auth-form">
+                <h3>Приглашения в кланы</h3>
+                <div id="clan-invites-container" style="text-align: left; max-height: 150px; overflow-y: auto;"></div>
             </div>
         </div>
 
@@ -143,7 +147,7 @@
             <h2 id="clan-header-name">Загрузка данных...</h2>
             <div style="background: rgba(0,0,0,0.4); padding: 10px; border-radius: 8px;">
                 <span id="clan-id-display" style="font-size: 0.9rem; color: #bdc3c7;">ID: </span>
-                <button class="menu-btn" onclick="copyClanId()" style="padding: 5px 10px; font-size: 0.8rem; background-color: #7f8c8d; margin-left: 10px; display:inline-block; width:auto; box-shadow:none; margin:0;">Пригласить друга (ID)</button>
+                <button class="menu-btn" onclick="copyClanId()" style="padding: 5px 10px; font-size: 0.8rem; background-color: #7f8c8d; margin-left: 10px; display:inline-block; width:auto; box-shadow:none; margin:0;">Копировать ID</button>
             </div>
 
             <div style="display: flex; flex-wrap: wrap; gap: 15px; width: 100%; justify-content: center;">
@@ -159,6 +163,20 @@
                 <div style="flex: 1; min-width: 250px; background: rgba(52, 73, 94, 0.6); padding: 15px; border-radius: 8px; display: flex; flex-direction: column; height: 300px; box-sizing: border-box;">
                     <h3>Участники</h3>
                     <div id="clan-members-container" style="flex: 1; overflow-y: auto; text-align: left; padding: 5px; background: rgba(0,0,0,0.2); border-radius: 5px;"></div>
+                </div>
+            </div>
+
+            <div id="clan-settings-view" class="auth-form" style="max-width: 100%; display: none; margin-top: 10px;">
+                <h3>Управление Кланом</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <input type="text" id="edit-clan-tag" placeholder="Новый ТЕГ" maxlength="4">
+                        <button class="menu-btn" onclick="handleChangeClanTag()" style="font-size:0.9rem; padding:8px; background-color:#3498db; box-shadow: 0 4px #2980b9; margin: 5px 0 0 0;">Изменить ТЕГ</button>
+                    </div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <input type="text" id="invite-player-nick" placeholder="Никнейм игрока">
+                        <button class="menu-btn" onclick="handleInvitePlayer()" style="font-size:0.9rem; padding:8px; background-color:#2ecc71; box-shadow: 0 4px #27ae60; margin: 5px 0 0 0;">Пригласить по нику</button>
+                    </div>
                 </div>
             </div>
             
@@ -190,7 +208,7 @@
             collection, getDocs, onSnapshot, query, orderBy, addDoc 
         } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 
-        // КОНФИГУРАЦИЯ FIREBASE (Твоя база)
+        // КОНФИГУРАЦИЯ FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyAsYourRealConfigKey Here",
             authDomain: "clash-ruslan.firebaseapp.com",
@@ -213,8 +231,15 @@
         let currentClanId = null;
         let clanUnsubscribeChat = null;
         let clanUnsubscribeMembers = null;
+        let clanUnsubscribeInvites = null;
         let currentClanOwner = null;
         let isCurrentPlayerMutedInClan = false;
+
+        // ОБНОВЛЕНИЕ БАННЕРА
+        function updateTopBanner() {
+            document.getElementById('user-cups').innerText = userData.cups || 0;
+            document.getElementById('user-display-name').innerText = currentUsername || '...';
+        }
 
         // ПЕРЕКЛЮЧЕНИЕ ЭКРАНОВ
         window.showScreen = function(screenId) {
@@ -238,7 +263,7 @@
             document.getElementById('msg-overlay').style.display = 'none';
         }
 
-        // АВТОР ИЗАЦИЯ (ВХОД И АВТОРЕГИСТРАЦИЯ)
+        // АВТОРИЗАЦИЯ
         window.handleAuth = async function() {
             const user = document.getElementById('auth-username').value.trim();
             const pass = document.getElementById('auth-password').value.trim();
@@ -249,8 +274,6 @@
             }
 
             currentUsername = user;
-            document.getElementById('user-display-name').innerText = currentUsername;
-
             const userRef = doc(db, "users", currentUsername);
             try {
                 const userSnap = await getDoc(userRef);
@@ -264,12 +287,11 @@
                         return;
                     }
                 } else {
-                    // Новая регистрация
                     userData = { password: pass, cups: 0, clanId: null };
                     await setDoc(userRef, userData);
                 }
                 
-                document.getElementById('user-cups').innerText = userData.cups;
+                updateTopBanner();
                 showScreen('menu-screen');
             } catch(e) {
                 showMsg("Ошибка сети", e.message);
@@ -281,17 +303,17 @@
             userData = { cups: 0, clanId: null };
             if(clanUnsubscribeChat) clanUnsubscribeChat();
             if(clanUnsubscribeMembers) clanUnsubscribeMembers();
+            if(clanUnsubscribeInvites) clanUnsubscribeInvites();
             showScreen('auth-screen');
         }
 
         // ==========================================
-        //         ЛОГИКА СИСТЕМЫ КЛАНОВ (NEW)
+        //         ЛОГИКА СИСТЕМЫ КЛАНОВ
         // ==========================================
         
         window.openClanScreen = async function() {
             showScreen('clan-screen');
             
-            // Загружаем свежие данные юзера
             try {
                 const userSnap = await getDoc(doc(db, "users", currentUsername));
                 if(userSnap.exists()) {
@@ -309,24 +331,62 @@
                 document.getElementById('clan-info-view').style.display = 'none';
                 if(clanUnsubscribeChat) clanUnsubscribeChat();
                 if(clanUnsubscribeMembers) clanUnsubscribeMembers();
+                listenToIncomingInvites();
             }
+        }
+
+        // Прослушивание приглашений (если игрок без клана)
+        function listenToIncomingInvites() {
+            if(clanUnsubscribeInvites) clanUnsubscribeInvites();
+            
+            clanUnsubscribeInvites = onSnapshot(collection(db, "users", currentUsername, "invites"), (snapshot) => {
+                const container = document.getElementById('clan-invites-container');
+                container.innerHTML = '';
+                
+                if(snapshot.empty) {
+                    container.innerHTML = '<p style="font-size:0.9rem; color:#bdc3c7; text-align:center;">Приглашений нет</p>';
+                    return;
+                }
+
+                snapshot.forEach((docInv) => {
+                    const inv = docInv.data();
+                    const div = document.createElement('div');
+                    div.style = "display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:8px; margin:5px 0; border-radius:5px; border-left: 3px solid #2ecc71;";
+                    div.innerHTML = `
+                        <div style="font-size:0.9rem;">
+                            <b>${inv.clanName}</b> [${inv.clanTag}]<br>
+                            <span style="font-size:0.75rem; color:#bdc3c7;">От: ${inv.invitedBy}</span>
+                        </div>
+                        <div>
+                            <button onclick="acceptClanInvite('${inv.clanId}')" style="background:#2ecc71; border:none; color:white; padding:4px 8px; border-radius:3px; cursor:pointer;">🗸</button>
+                            <button onclick="declineClanInvite('${inv.clanId}')" style="background:#e74c3c; border:none; color:white; padding:4px 8px; border-radius:3px; cursor:pointer; margin-left:3px;">✕</button>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+            });
         }
 
         async function startClanRealtimeListeners(clanId) {
             if(clanUnsubscribeChat) clanUnsubscribeChat();
             if(clanUnsubscribeMembers) clanUnsubscribeMembers();
 
-            // 1. Слушаем основную карточку Клана
             onSnapshot(doc(db, "clans", clanId), (snap) => {
                 if(snap.exists()) {
                     const clanInfo = snap.data();
                     currentClanOwner = clanInfo.owner;
                     document.getElementById('clan-header-name').innerText = `${clanInfo.name} [${clanInfo.tag}]`;
                     document.getElementById('clan-id-display').innerText = `ID Клана: ${clanId}`;
+
+                    // Показываем настройки изменения тега и инвайтов только владельцу
+                    if(currentUsername === currentClanOwner) {
+                        document.getElementById('clan-settings-view').style.display = 'block';
+                    } else {
+                        document.getElementById('clan-settings-view').style.display = 'none';
+                    }
                 }
             });
 
-            // 2. Слушаем Чат Клана в реальном времени
             const chatQuery = query(collection(db, "clans", clanId, "messages"), orderBy("timestamp", "asc"));
             clanUnsubscribeChat = onSnapshot(chatQuery, (snapshot) => {
                 const container = document.getElementById('clan-messages-container');
@@ -341,7 +401,6 @@
                 container.scrollTop = container.scrollHeight;
             });
 
-            // 3. Слушаем Список Участников клана
             clanUnsubscribeMembers = onSnapshot(collection(db, "clans", clanId, "members"), (snapshot) => {
                 const container = document.getElementById('clan-members-container');
                 container.innerHTML = '';
@@ -356,17 +415,12 @@
                 snapshot.forEach((docMem) => {
                     const member = docMem.data();
                     const item = document.createElement('div');
-                    item.style.display = 'flex';
-                    item.style.justifyContent = 'space-between';
-                    item.style.alignItems = 'center';
-                    item.style.padding = '4px 0';
-                    item.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+                    item.style = 'display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.1);';
 
                     let roleBadge = member.role === 'owner' ? '👑' : '⚔️';
                     let muteBadge = member.muted ? ' [МУТ]' : '';
                     item.innerHTML = `<span>${roleBadge} ${member.username}${muteBadge}</span>`;
 
-                    // Интерфейс модерации для Владельца Клана
                     if (currentUsername === currentClanOwner && member.username !== currentUsername) {
                         const actionDiv = document.createElement('div');
                         
@@ -378,10 +432,7 @@
                         
                         const kBtn = document.createElement('button');
                         kBtn.innerText = "Кик";
-                        kBtn.style.fontSize = '0.7rem';
-                        kBtn.style.backgroundColor = '#e74c3c';
-                        kBtn.style.color = 'white';
-                        kBtn.style.border = 'none';
+                        kBtn.style = 'font-size: 0.7rem; background-color: #e74c3c; color: white; border: none;';
                         kBtn.onclick = () => kickUserFromClan(clanId, member.username);
 
                         actionDiv.appendChild(mBtn);
@@ -392,6 +443,78 @@
                     container.appendChild(item);
                 });
             });
+        }
+
+        // НАСТРОЙКА: СМЕНА ТЕГА КЛАНА
+        window.handleChangeClanTag = async function() {
+            const newTag = document.getElementById('edit-clan-tag').value.trim().toUpperCase();
+            if(newTag.length < 2 || newTag.length > 4) {
+                showMsg("Ошибка", "Тег должен состоять из 2-4 символов!");
+                return;
+            }
+            try {
+                await updateDoc(doc(db, "clans", currentClanId), { tag: newTag });
+                showMsg("Успешно", `Тег клана успешно изменен на [${newTag}]`);
+                document.getElementById('edit-clan-tag').value = '';
+            } catch(e) { showMsg("Ошибка", e.message); }
+        }
+
+        // НАСТРОЙКА: ПРИГЛАШЕНИЕ ПО НИКНЕЙМУ
+        window.handleInvitePlayer = async function() {
+            const targetNick = document.getElementById('invite-player-nick').value.trim();
+            if(!targetNick) return;
+            
+            if(targetNick === currentUsername) {
+                showMsg("Внимание", "Нельзя пригласить самого себя!");
+                return;
+            }
+
+            try {
+                const userSnap = await getDoc(doc(db, "users", targetNick));
+                if(!userSnap.exists()) {
+                    showMsg("Ошибка", `Игрок с ником ${targetNick} не зарегистрирован!`);
+                    return;
+                }
+
+                const clanSnap = await getDoc(doc(db, "clans", currentClanId));
+                const clanData = clanSnap.data();
+
+                // Отправляем приглашение прямо в профиль игрока
+                await setDoc(doc(db, "users", targetNick, "invites", currentClanId), {
+                    clanId: currentClanId,
+                    clanName: clanData.name,
+                    clanTag: clanData.tag,
+                    invitedBy: currentUsername,
+                    timestamp: Date.now()
+                });
+
+                showMsg("Успешно", `Приглашение отправлено игроку ${targetNick}!`);
+                document.getElementById('invite-player-nick').value = '';
+            } catch(e) { showMsg("Ошибка", e.message); }
+        }
+
+        // ПРИНЯТЬ ПРИГЛАШЕНИЕ
+        window.acceptClanInvite = async function(clanId) {
+            try {
+                await setDoc(doc(db, "clans", clanId, "members", currentUsername), {
+                    username: currentUsername,
+                    role: 'member',
+                    muted: false
+                });
+
+                userData.clanId = clanId;
+                await setDoc(doc(db, "users", currentUsername), { clanId: clanId }, { merge: true });
+                await deleteDoc(doc(db, "users", currentUsername, "invites", clanId));
+                
+                openClanScreen();
+            } catch(e) { showMsg("Ошибка", e.message); }
+        }
+
+        // ОТКЛОНИТЬ ПРИГЛАШЕНИЕ
+        window.declineClanInvite = async function(clanId) {
+            try {
+                await deleteDoc(doc(db, "users", currentUsername, "invites", clanId));
+            } catch(e) { console.log(e); }
         }
 
         window.handleCreateClan = async function() {
@@ -460,7 +583,7 @@
             if(!text) return;
 
             if(isCurrentPlayerMutedInClan) {
-                showMsg("Замучен", "Вы получили мут от создателя клана и не можете отправлять сообщения!");
+                showMsg("Замучен", "Вы получили мут и не можете писать в чат!");
                 input.value = '';
                 return;
             }
@@ -478,7 +601,7 @@
         window.copyClanId = function() {
             if(!currentClanId) return;
             navigator.clipboard.writeText(currentClanId);
-            showMsg("Успешно", "ID клана скопирован! Передай его своему другу для вступления.");
+            showMsg("Успешно", "ID скопирован!");
         }
 
         async function toggleMuteStatus(clanId, username, currentMute) {
@@ -514,7 +637,6 @@
             } catch(e) { console.log(e); }
         }
 
-
         // ==========================================
         //         ИГРОВОЙ ПРОЦЕСС И МАТЧМЕЙКИНГ
         // ==========================================
@@ -523,11 +645,9 @@
             showScreen('game-screen');
             document.getElementById('matchmaking-status').innerText = "Поиск оппонента...";
             
-            // Логика подбора соперника на Firebase
             await setDoc(doc(db, "matchmaking", currentUsername), { timestamp: Date.now() });
             
             setTimeout(async () => {
-                // Имитация автоподбора или запуск бота, если никого нет
                 document.getElementById('matchmaking-status').innerText = "Бой начинается!";
                 runDemoGame();
             }, 2000);
@@ -584,9 +704,9 @@
 
             userData.cups += cupChange; if(userData.cups < 0) userData.cups = 0;
             await setDoc(doc(db, "users", currentUsername), { cups: userData.cups }, { merge: true });
-            document.getElementById('user-cups').innerText = userData.cups;
             
             isBotMatch = false; 
+            updateTopBanner(); 
             showScreen('menu-screen');
             
             if (forcedByDisconnect) {
